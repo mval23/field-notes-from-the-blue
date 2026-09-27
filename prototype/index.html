@@ -1,0 +1,1522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>Field Notes From the Blue</title>
+<meta name="description" content="Field Notes From the Blue, Volume I: Whale Sharks. An illustrated, cited, five-minute interactive documentary.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap">
+<style>
+:root{
+  --abyss:#0a2233; --deep:#0e3246; --ocean:#1b5a72; --turq:#3f9c98; --sea:#5f977b; --foam:#d3e6e0;
+  --paper:#f2eadb; --paper-2:#e7dcc4; --paper-3:#d6c6a4; --ink:#26282a; --ink-2:#47463f; --ink-3:#6a6558;
+  --coral:#d2705a; --coral-ink:#a3452f; --gold:#cf9f45; --gold-2:#e8c67f; --teal-ink:#285c63;
+  --on-deep:#eef3ef; --on-deep-2:#b9cdd0; --line-deep:rgba(214,231,229,.26);
+  --focus:#ffd76a;
+  --f-display:"IM Fell English","Iowan Old Style",Georgia,serif;
+  --f-body:"Spectral",Georgia,"Times New Roman",serif;
+  --f-mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --f-hand:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --top:68px; --bot:128px; --gut:clamp(16px,3vw,36px);
+  --paper-noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .36  0 0 0 0 .29  0 0 0 0 .18  0 0 0 .11 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--abyss);color:var(--on-deep);font-family:var(--f-body);font-size:17px;line-height:1.5;overflow:hidden;-webkit-font-smoothing:antialiased}
+#root{height:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.on-paper :focus-visible,.drawer :focus-visible{outline-color:#b3401f}
+[tabindex="-1"]:focus{outline:none}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.fallback{padding:40px 24px;max-width:36rem;margin:auto;font-family:var(--f-body)}
+
+/* ---------- App frame ---------- */
+.app{position:relative;height:100%;overflow:hidden;isolation:isolate}
+.stage{position:absolute;inset:0}
+.scene{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;animation:sceneIn .7s cubic-bezier(.2,.7,.2,1) both;scrollbar-width:thin}
+.scene.back{animation-name:sceneBack}
+.scene-inner{position:relative;z-index:2;min-height:100%;padding:var(--top) var(--gut) var(--bot)}
+.particles{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.bg svg{width:100%;height:100%;display:block}
+
+.topbar{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--gut) 18px;background:linear-gradient(to bottom,rgba(7,25,38,.8),rgba(7,25,38,0));pointer-events:none}
+.topbar>*{pointer-events:auto}
+.app.chrome-light .topbar{background:none;color:var(--ink)}
+.wordmark{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+.wordmark b{font-family:var(--f-display);font-weight:400;font-size:19px;white-space:nowrap}
+.wordmark small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);margin-top:3px;white-space:nowrap}
+.app.chrome-light .wordmark small{color:var(--coral-ink)}
+.tools{display:flex;gap:8px;align-items:center}
+
+.btn{font-family:var(--f-mono);font-size:12.5px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;min-height:44px;padding:0 16px;border-radius:3px;border:1px solid var(--line-deep);background:rgba(8,28,42,.45);color:var(--on-deep);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s,border-color .2s,color .2s;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--gold-2)}
+.btn[disabled]{opacity:.38;cursor:default}
+.btn[disabled]:hover{border-color:var(--line-deep)}
+.btn-primary{background:var(--gold);border-color:var(--gold);color:#1d1a12}
+.btn-primary:hover{background:var(--gold-2);border-color:var(--gold-2)}
+.btn-explore{border-color:rgba(232,198,127,.65);color:var(--gold-2);background:rgba(8,28,42,.55)}
+.btn-explore:hover{background:rgba(207,159,69,.16)}
+.btn[aria-pressed="true"]{background:rgba(207,159,69,.2);border-color:var(--gold-2);color:var(--gold-2)}
+.app.chrome-light .topbar .btn{color:var(--ink);border-color:rgba(38,40,42,.35);background:rgba(242,234,219,.55)}
+.app.chrome-light .topbar .btn:hover{border-color:var(--ink)}
+.app.chrome-light .topbar .btn[aria-pressed="true"]{color:var(--coral-ink);border-color:var(--coral-ink)}
+.on-paper .btn{color:var(--ink);border-color:rgba(38,40,42,.35);background:transparent}
+.on-paper .btn:hover{border-color:var(--ink);background:rgba(38,40,42,.04)}
+.on-paper .btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.on-paper .btn-primary:hover{background:#3b3d40}
+.on-paper .btn[aria-pressed="true"]{background:rgba(210,112,90,.12);border-color:var(--coral-ink);color:var(--coral-ink)}
+.lbl-short{display:none}
+
+.dock{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:26px var(--gut) 12px;background:linear-gradient(to top,rgba(6,22,33,.95) 58%,rgba(6,22,33,0));display:grid;gap:6px}
+.progress{display:flex;align-items:center;gap:16px;min-width:0}
+.progress ol{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex:0 1 420px;min-width:120px}
+.progress li{flex:1}
+.seg{display:block;width:100%;height:30px;padding:0;border:0;background:none;cursor:pointer}
+.seg span{display:block;height:3px;border-radius:2px;background:rgba(214,231,229,.24);transition:background .3s}
+.seg:hover span{background:rgba(214,231,229,.5)}
+.seg.done span{background:var(--turq)}
+.seg.current span{background:var(--gold);height:4px}
+.progress-label{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--on-deep-2);flex:1;min-width:0;overflow-wrap:anywhere}
+.progress-label b{color:var(--on-deep);font-weight:500}
+.linkbtn{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:none;border:0;color:var(--gold-2);cursor:pointer;min-height:44px;padding:0 4px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;white-space:nowrap}
+.navrow{display:flex;align-items:center;gap:10px}
+.navrow .btn-explore{flex:1;max-width:360px;margin-inline:auto}
+.navrow .btn-nav{min-width:104px}
+.keyhint{font-family:var(--f-mono);font-size:11px;color:var(--on-deep-2);letter-spacing:.06em}
+
+/* ---------- Type ---------- */
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);margin:0 0 10px}
+.display{font-family:var(--f-display);font-weight:400;font-size:clamp(36px,5.4vw,68px);line-height:1.0;margin:0;text-wrap:balance;letter-spacing:-.005em}
+.lede{font-size:clamp(16px,1.35vw,18.5px);max-width:36em;margin:12px 0 0;color:var(--on-deep-2)}
+.hand{font-family:var(--f-hand);font-weight:500;line-height:1.1}
+.tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;padding:3px 7px;border:1px solid currentColor;border-radius:2px;white-space:nowrap;vertical-align:middle}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag.doc{color:#2c6356}
+.tag.open{color:var(--coral-ink)}
+.tag.assess{color:#6d5520}
+.tag.illus{color:var(--ink-3);border-style:dashed}
+.tag.illus::before{background:none;border:1px dashed currentColor}
+.dark .tag.illus,.tag.illus.dk{color:var(--on-deep-2)}
+.cite{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.02em;background:none;border:0;padding:4px 0;margin:0 2px;color:inherit;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;opacity:.85;white-space:nowrap}
+.cite:hover{opacity:1;text-decoration-style:solid}
+
+/* ---------- Paper pages ---------- */
+.deepbg{background:radial-gradient(120% 80% at 50% -10%,#1f5f72 0%,#123d53 40%,#0a2233 80%)}
+.page{position:relative;max-width:1180px;margin:0 auto;background-color:var(--paper);background-image:var(--paper-noise),radial-gradient(60% 50% at 88% 12%,rgba(201,162,74,.10),transparent 70%),radial-gradient(40% 40% at 8% 92%,rgba(120,90,40,.08),transparent 70%),linear-gradient(90deg,rgba(80,60,30,.10),rgba(80,60,30,0) 26px);color:var(--ink);padding:clamp(18px,3vw,40px) clamp(18px,3.4vw,48px);box-shadow:0 30px 80px rgba(0,0,0,.45),0 2px 0 rgba(255,255,255,.4) inset;border-radius:2px}
+.page::after{content:"";position:absolute;inset:8px;border:1px solid rgba(90,70,40,.16);pointer-events:none}
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px;margin-bottom:clamp(14px,2vw,24px)}
+.page h2{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,3.6vw,46px);line-height:1.02;margin:0;text-wrap:balance}
+.page .kicker{color:var(--coral-ink)}
+.folio{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.page p{margin:0}
+.page .body{font-size:16px;line-height:1.55;color:var(--ink-2);max-width:38em}
+.figcap{font-size:13.5px;color:var(--ink-3);font-style:italic;margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+
+/* ---------- Scene 1 ---------- */
+.s1 .bg svg{position:absolute;inset:0}
+.s1-top{position:absolute;left:0;right:0;top:var(--top);height:calc(52% - var(--top));display:flex;align-items:center;justify-content:center;gap:clamp(22px,4.5vw,64px);padding:0 var(--gut);z-index:3}
+.journal-wrap{position:relative;flex:none;width:clamp(170px,19vw,272px);animation:bob 7s ease-in-out infinite}
+.journal{position:relative;aspect-ratio:3/4;perspective:1600px}
+.jpage{position:absolute;inset:3% 2% 3% 3%;background-color:var(--paper);background-image:var(--paper-noise);border-radius:2px 6px 6px 2px;box-shadow:0 1px 0 #c9b88f,0 2px 0 #e2d6bb,0 3px 0 #c9b88f;padding:14% 12%;color:var(--ink);display:flex;flex-direction:column;gap:8px}
+.jpage .hand{font-size:clamp(16px,1.6vw,22px);color:var(--teal-ink)}
+.jpage hr{border:0;border-top:1px solid rgba(38,40,42,.25);width:60%;margin:4px 0}
+.jcover{position:absolute;inset:0;transform-origin:0% 50%;transition:transform 1s cubic-bezier(.5,.05,.3,1);transform-style:preserve-3d;backface-visibility:hidden}
+.journal.opening .jcover{transform:rotateY(-158deg)}
+.ribbon{position:absolute;left:66%;bottom:-9%;width:9px;height:16%;background:linear-gradient(90deg,#b95a44,#d77a61 60%,#a8493a);clip-path:polygon(0 0,100% 0,100% 100%,50% 84%,0 100%);z-index:-1}
+.jshadow{position:absolute;left:8%;right:8%;bottom:-16%;height:9%;background:radial-gradient(closest-side,rgba(20,50,60,.38),transparent);filter:blur(4px);animation:shadow 7s ease-in-out infinite}
+
+.jc{--cover:#24514e;position:absolute;inset:0;border-radius:3px 7px 7px 3px;background-color:var(--cover);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),repeating-linear-gradient(-45deg,rgba(0,0,0,.05) 0 1px,transparent 1px 3px),radial-gradient(120% 90% at 30% 20%,rgba(255,255,255,.12),transparent 60%),linear-gradient(90deg,rgba(0,0,0,.35),rgba(0,0,0,0) 9%);box-shadow:0 18px 40px rgba(6,22,33,.45),inset 0 0 0 1px rgba(255,255,255,.06);color:var(--gold-2);padding:9% 9% 9% 13%;display:flex}
+.jc-frame{flex:1;border:1px solid rgba(232,198,127,.7);outline:1px solid rgba(232,198,127,.35);outline-offset:3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:10% 7% 8%}
+.jc-series{font-family:var(--f-display);font-size:clamp(17px,1.9vw,26px);line-height:1.05;margin:0;color:var(--gold-2);font-weight:400}
+.jc-series span{display:block;font-style:italic;font-size:.82em;margin-top:2px}
+.jc-emblem{width:92%;height:auto;color:var(--gold-2);overflow:visible}
+.jc-emblem .em-fill{fill:var(--cover)}
+.jc-plate{background:var(--paper);background-image:var(--paper-noise);color:var(--ink);padding:7% 8%;width:94%;box-shadow:inset 0 0 0 1px rgba(38,40,42,.4),inset 0 0 0 3px var(--paper),inset 0 0 0 4px rgba(38,40,42,.25);display:flex;flex-direction:column;gap:1px}
+.jc-vol{font-family:var(--f-mono);font-size:clamp(8.5px,.72vw,10px);letter-spacing:.2em;text-transform:uppercase;color:var(--coral-ink)}
+.jc-name{font-family:var(--f-display);font-size:clamp(16px,1.6vw,22px);line-height:1.05}
+.jc-sub{font-family:var(--f-display);font-style:italic;font-size:clamp(10px,.85vw,12.5px);color:var(--ink-2);line-height:1.2}
+.s1-copy{max-width:25rem;color:var(--ink);display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.s1-copy .kicker{color:var(--coral-ink);margin:0}
+.s1-copy p.intro{margin:0;font-size:clamp(16px,1.3vw,18px);color:var(--ink-2)}
+.s1-copy .hand{font-size:clamp(20px,1.9vw,26px);color:var(--teal-ink);margin:2px 0 0}
+.s1 .btn-primary{background:var(--ink);border-color:var(--ink);color:var(--paper);min-height:50px;padding:0 22px}
+.s1 .btn-primary:hover{background:#3a3c3f}
+.s1-shark{position:absolute;left:50%;top:59%;width:min(90vw,98vh,1180px);z-index:2;animation:cruise 46s ease-in-out infinite alternate}
+.s1-shark .ws-fig{opacity:.8}
+.s1-haze{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(20,82,98,0) 52%,rgba(18,70,88,.28) 70%,rgba(10,34,51,.55) 100%)}
+.s1 .particles{z-index:2;top:52%;height:48%}
+
+/* ---------- Whale-shark figure ---------- */
+.ws-fig{position:relative;width:100%;aspect-ratio:1200/460;max-width:100%}
+.ws-fig>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ws-anim{animation:glide 9s ease-in-out infinite}
+.ws-anim .l-tail{transform-origin:78.4% 49.6%;animation:sway 5.2s ease-in-out infinite alternate}
+.ws-anim .l-pec{transform-origin:29.4% 63%;animation:pec 6.4s ease-in-out infinite alternate}
+
+/* ---------- Scene 2 ---------- */
+.s2 .scene-inner{display:flex;flex-direction:column;gap:clamp(10px,2vh,24px)}
+.s2-copy{max-width:44rem}
+.statement{margin:16px 0 0;padding:2px 0 2px 18px;border-left:2px solid var(--coral);font-family:var(--f-display);font-style:italic;font-size:clamp(19px,2vw,27px);line-height:1.32;color:#e8f1ed;max-width:32em}
+.statement p{margin:0}
+.s2-figure{margin:0;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.s2-stage{position:relative;width:min(100%,calc((100vh - 400px) * 1.94));min-width:min(100%,520px);margin:0 auto;aspect-ratio:1200/620}
+.s2-stage .ws-fig{position:absolute;left:0;top:12.9%;width:100%}
+.s2-stage>svg.over{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.s2-caption{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px;max-width:1100px;margin:0 auto;width:100%}
+.specimen{font-size:15px;color:var(--on-deep-2);max-width:40em;margin:0}
+.specimen i{color:var(--on-deep);font-style:italic}
+.scale-note{font-size:14.5px;color:var(--gold-2);margin:0;max-width:40em}
+.fade-in{animation:fadeIn .5s ease both}
+
+/* ---------- Scene 3 ---------- */
+.grid-plate{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(18px,3vw,44px);align-items:start}
+.plate-fig{position:relative;margin:0}
+.plate-art{position:relative}
+.plate-art>svg.labels{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.hot{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:0;background:none;cursor:pointer;display:grid;place-items:center;padding:0}
+.hot span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(242,234,219,.92);border:1.5px solid var(--coral-ink);color:var(--coral-ink);font-family:var(--f-display);font-size:17px;line-height:1;box-shadow:0 0 0 4px rgba(210,112,90,.18);transition:transform .2s,background .2s}
+.hot:hover span{transform:scale(1.08)}
+.hot[aria-pressed="true"] span{background:var(--coral-ink);color:var(--paper);box-shadow:0 0 0 6px rgba(210,112,90,.25)}
+.hot-list{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:10px}
+.hot-list .btn{min-height:40px;padding:0 12px;font-size:11.5px}
+.note{border-top:1px solid rgba(38,40,42,.25);padding-top:14px}
+.note-num{font-family:var(--f-display);font-size:15px;color:var(--coral-ink)}
+.note h3{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,2.2vw,28px);margin:2px 0 8px;line-height:1.1}
+.note p{font-size:16px;line-height:1.55;color:var(--ink-2)}
+.demo{margin-top:22px;border-top:1px solid rgba(38,40,42,.25);padding-top:14px}
+.demo h3{font-family:var(--f-display);font-weight:400;font-size:21px;margin:0 0 6px}
+.demo canvas{display:block;width:100%;aspect-ratio:560/300;max-width:100%}
+.demo-controls{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:6px}
+.demo-controls .btn{min-height:40px;padding:0 12px;font-size:11.5px}
+.counter{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+.step-text{font-size:15px;color:var(--ink-2);margin-top:8px!important;min-height:3em}
+
+/* ---------- Scene 4 ---------- */
+.grid-id{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(18px,3.4vw,52px);align-items:start}
+.id-thumb{margin-top:18px;position:relative}
+.id-thumb .ws-fig{max-width:100%}
+.id-thumb svg.over{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.swatch{display:block;width:100%;height:auto;border-radius:2px;box-shadow:0 0 0 1px rgba(38,40,42,.35),0 6px 18px rgba(20,30,30,.18)}
+.ref-wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.swatch-label{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;gap:8px}
+.cands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.cand{background:none;border:1px solid rgba(38,40,42,.3);border-radius:3px;padding:8px 8px 10px;cursor:pointer;color:var(--ink);text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,background .2s,transform .2s;min-height:44px}
+.cand:hover{border-color:var(--ink);transform:translateY(-2px)}
+.cand .swatch{box-shadow:0 0 0 1px rgba(38,40,42,.25)}
+.cand-name{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase}
+.cand.right{border-color:#2c6356;background:rgba(44,99,86,.08)}
+.cand.wrong{border-color:var(--coral-ink);background:rgba(210,112,90,.07)}
+.verdict{margin-top:14px;font-size:16px;line-height:1.5;color:var(--ink-2);min-height:4.5em}
+.verdict strong{font-family:var(--f-display);font-weight:400;font-size:21px;color:var(--ink);display:block;margin-bottom:2px}
+.id-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+/* ---------- Scene 5 ---------- */
+.grid-map{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(14px,2vw,24px);align-items:start}
+.map-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.map-svg{display:block;width:100%;min-width:680px;height:auto}
+.facts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px clamp(18px,3vw,40px)}
+.map-key{display:grid;gap:6px;font-size:13px;color:var(--ink-3);margin-top:8px}
+.map-key>span{display:block;line-height:1.5}
+.map-key svg{vertical-align:middle;margin-right:6px}
+.facts{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.facts li{display:grid;gap:4px;padding-bottom:12px;border-bottom:1px solid rgba(38,40,42,.16)}
+.facts li:last-child,.facts-grid li:nth-last-child(2){border-bottom:0}
+.facts h3{font-family:var(--f-display);font-weight:400;font-size:20px;margin:0;line-height:1.15}
+.facts p{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.help{margin-top:clamp(18px,2.6vw,30px);border-top:1.5px solid var(--ink);padding-top:14px}
+.help-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 20px;margin-bottom:10px}
+.help-head h3{font-family:var(--f-display);font-weight:400;font-size:26px;margin:0}
+.actions{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2.4vw,32px)}
+.actions li{display:grid;gap:4px;align-content:start}
+.actions b{font-family:var(--f-display);font-weight:400;font-size:19px}
+.actions p{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.ask-cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0 16px}
+
+/* ---------- Scene 6 ---------- */
+.s6 .scene-inner{display:flex;flex-direction:column;gap:clamp(16px,2.4vh,28px);max-width:1240px;margin:0 auto}
+.shelf{display:grid;grid-template-columns:minmax(0,1.2fr) repeat(3,minmax(0,1fr));grid-template-rows:auto auto;gap:clamp(12px,1.8vw,24px);transform-origin:13% 50%;animation:shelfZoom 1.6s cubic-bezier(.22,.8,.2,1) both}
+.vol1{grid-row:1 / span 2;position:relative;display:flex;flex-direction:column;gap:10px}
+.vol1 .journal{width:100%;max-width:320px;margin:0 auto}
+.vol1 .open-mark{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-2);text-align:center}
+.fvol{position:relative;aspect-ratio:4/3.1;border:0;padding:0;cursor:pointer;border-radius:3px 6px 6px 3px;color:var(--gold-2);text-align:left;animation:fadeUp .9s ease both;transition:transform .25s,box-shadow .25s}
+.fvol:hover{transform:translateY(-3px)}
+.fvol[aria-pressed="true"]{box-shadow:0 0 0 2px var(--gold-2),0 16px 36px rgba(0,0,0,.4)}
+.fvol .jc{padding:7% 7% 7% 10%}
+.fv-inner{flex:1;border:1px solid rgba(232,198,127,.55);display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6%;padding:7% 8%}
+.fv-inner svg{width:clamp(46px,6vw,84px);height:auto;overflow:visible}
+.fv-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fv-vol{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.9}
+.fv-name{font-family:var(--f-display);font-size:clamp(17px,1.7vw,23px);line-height:1.05;color:#f3dfae}
+.stamp{position:absolute;right:7%;bottom:9%;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#f1b19f;border:1px solid rgba(241,177,159,.7);padding:2px 5px;transform:rotate(-4deg);border-radius:2px;background:rgba(0,0,0,.12)}
+.vol-note{min-height:4.4em;font-size:16px;color:var(--on-deep-2);max-width:48em}
+.vol-note strong{color:var(--on-deep);font-weight:500}
+.finale{font-family:var(--f-display);font-style:italic;font-size:clamp(24px,3vw,40px);line-height:1.18;margin:0;max-width:26em;text-wrap:balance;color:#f2f6f2}
+.ctas{display:flex;flex-wrap:wrap;gap:10px}
+.gh-note{font-size:14.5px;color:var(--gold-2);margin:0}
+
+/* ---------- Drawers ---------- */
+.scrim{position:absolute;inset:0;background:rgba(4,16,25,.6);z-index:60;animation:fadeIn .25s ease both}
+.drawer{position:absolute;top:0;right:0;bottom:0;width:min(480px,100%);z-index:61;background-color:var(--paper);background-image:var(--paper-noise);color:var(--ink);overflow-y:auto;padding:22px clamp(18px,3vw,30px) 40px;box-shadow:-20px 0 60px rgba(0,0,0,.4);animation:slideIn .35s cubic-bezier(.2,.7,.2,1) both}
+.drawer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.drawer h2{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1.05;margin:0}
+.drawer .kicker{color:var(--coral-ink)}
+.drawer p{margin:0 0 10px;font-size:15.5px;color:var(--ink-2)}
+.drawer .btn{color:var(--ink);border-color:rgba(38,40,42,.35);background:transparent}
+.drawer .btn:hover{border-color:var(--ink)}
+.drawer .btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 14px}
+.chip{font-family:var(--f-body);font-size:15px;text-align:left;border:1px solid rgba(38,40,42,.3);border-radius:3px;background:rgba(255,255,255,.35);padding:8px 12px;cursor:pointer;min-height:44px;color:var(--ink)}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{border-color:var(--teal-ink);background:rgba(40,92,99,.1)}
+.chip.test{border-style:dashed}
+.askform{display:flex;gap:8px;margin:4px 0 16px}
+.askform label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.askform input{flex:1;min-width:0;min-height:44px;border:1px solid rgba(38,40,42,.4);border-radius:3px;background:#fbf7ee;color:var(--ink);font:inherit;font-size:16px;padding:0 12px}
+.askform input:focus-visible{outline:3px solid #b3401f;outline-offset:1px}
+.answer{border-top:1.5px solid var(--ink);padding-top:12px}
+.answer .q{font-family:var(--f-display);font-size:21px;line-height:1.2;margin:0 0 8px;color:var(--ink)}
+.answer .a{font-size:16px;line-height:1.55;color:var(--ink);margin:0 0 10px}
+.answer .meta{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.02em}
+.answer.none .a{color:var(--coral-ink)}
+.srcs{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:14px}
+.srcs li{padding:10px 12px;border-left:2px solid rgba(38,40,42,.2);transition:background .6s,border-color .6s}
+.srcs li.hl{background:rgba(207,159,69,.18);border-color:var(--gold)}
+.src-title{font-family:var(--f-body);font-size:15px;line-height:1.4;color:var(--ink);margin:0 0 3px}
+.src-meta{font-size:13.5px;color:var(--ink-2);margin:0 0 3px;line-height:1.45}
+.src-link{font-family:var(--f-mono);font-size:12px;color:var(--teal-ink);overflow-wrap:anywhere}
+.src-used{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:4px}
+.concept-list{margin:6px 0 16px;padding-left:1.3em;display:grid;gap:6px;font-size:15.5px;color:var(--ink-2)}
+.concept-list b{font-weight:500;color:var(--ink)}
+.small-print{font-size:13px!important;color:var(--ink-3)!important}
+
+/* ---------- Dive ---------- */
+.dive{position:absolute;inset:-2px;z-index:45;pointer-events:none;background:linear-gradient(to bottom,rgba(190,225,220,0) 0%,rgba(120,190,190,.95) 12%,#2a7a86 30%,#124259 62%,#0a2233 100%);animation:dive 1.3s cubic-bezier(.6,.05,.4,1) forwards}
+.dive i{position:absolute;bottom:10%;width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(230,245,242,.7);animation:bubble 1.2s ease-in both}
+
+/* ---------- Keyframes ---------- */
+@keyframes sceneIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes sceneBack{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes glide{0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(-8px,-6px,0) rotate(-.5deg)}}
+@keyframes sway{from{transform:rotate(-2.8deg)}to{transform:rotate(2.8deg)}}
+@keyframes pec{from{transform:rotate(-2deg)}to{transform:rotate(2.6deg)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.4deg)}50%{transform:translateY(-9px) rotate(.5deg)}}
+@keyframes shadow{0%,100%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(.9);opacity:.6}}
+@keyframes cruise{from{transform:translateX(-46%)}to{transform:translateX(-54%)}}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-200px)}}
+@keyframes rays{0%,100%{opacity:.45}50%{opacity:.85}}
+@keyframes shelfZoom{from{transform:scale(1.9);opacity:.2}to{transform:none;opacity:1}}
+@keyframes dive{0%{transform:translateY(100%)}45%,55%{transform:translateY(0)}100%{transform:translateY(-105%)}}
+@keyframes bubble{from{transform:translateY(0);opacity:0}30%{opacity:1}to{transform:translateY(-70vh);opacity:0}}
+.drift{animation:drift 14s linear infinite}
+.drift.slow{animation-duration:22s}
+.ray{animation:rays 9s ease-in-out infinite}
+.ray:nth-child(2n){animation-duration:12s;animation-delay:-3s}
+.s1-shark{transform:translateX(-50%)}
+
+/* Reduced motion: every animation removed; all content visible at rest */
+.rm *,.rm *::before,.rm *::after{animation:none!important;transition:none!important}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .grid-plate,.grid-id,.grid-map{grid-template-columns:minmax(0,1fr)}
+  .actions,.facts-grid{grid-template-columns:minmax(0,1fr)}
+  .shelf{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:none}
+  .vol1{grid-column:1 / -1;grid-row:auto;flex-direction:row;align-items:center;gap:18px}
+  .vol1 .journal{width:150px;margin:0}
+  .keyhint{display:none}
+}
+@media (max-width:720px){
+  :root{--top:70px;--bot:172px}
+  body{font-size:16px}
+  .lbl-long{display:none}.lbl-short{display:inline}
+  .wordmark b{font-size:15px;white-space:normal;line-height:1.1}
+  .wordmark small{display:none}
+  .topbar{align-items:flex-start}
+  .progress{flex-wrap:wrap;row-gap:0}
+  .progress ol{flex:1 1 100%}
+  .tools{gap:6px}
+  .tools .btn{padding:0 10px;font-size:11px}
+  .s1-top{flex-direction:column;justify-content:flex-start;gap:14px;padding-top:6px;height:auto}
+  .journal-wrap{width:clamp(120px,34vw,170px)}
+  .s1-copy{align-items:center;text-align:center;gap:8px}
+  .s1-copy p.intro{font-size:14.5px}
+  .s1-copy .hand{display:none}
+  .s1-shark{top:64%}
+  .shelf{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fv-inner{grid-template-columns:minmax(0,1fr);gap:4px;padding:6%}
+  .fv-inner svg{width:40px}
+  .stamp{position:static;align-self:flex-start;margin-top:4px;transform:none}
+  .fvol{aspect-ratio:auto}
+  .fvol .jc{position:relative;min-height:130px}
+  .cands{gap:8px}
+  .navrow .btn-nav{min-width:0;padding:0 12px}
+  .s2-stage{width:100%;min-width:0}
+}
+@media (max-height:620px) and (min-width:721px){
+  .s1-top{height:auto;top:calc(var(--top) - 6px)}
+  .journal-wrap{width:150px}
+}
+</style>
+
+<div id="root">
+  <div class="fallback">
+    <p><strong>Field Notes From the Blue</strong></p>
+    <p>Loading the field journal… This page needs JavaScript and loads React from a public CDN. If it stays on this message, check your connection and reload.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+(function(){
+"use strict";
+const {useState,useEffect,useRef,useMemo,useCallback,memo,Fragment}=React;
+const html=htm.bind(React.createElement);
+
+/* =========================================================
+   Seeded randomness keeps every drawing identical between visits
+   ========================================================= */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const f1=n=>Math.round(n*10)/10;
+
+/* =========================================================
+   SOURCES — every factual claim in the page points here
+   ========================================================= */
+const SOURCES={
+  iucn:{short:"Pierce & Norman 2016",authors:"Pierce, S.J. & Norman, B.",year:"2016",title:"Rhincodon typus. The IUCN Red List of Threatened Species 2016: e.T19488A2365291.",pub:"International Union for Conservation of Nature (IUCN)",link:"https://doi.org/10.2305/IUCN.UK.2016-1.RLTS.T19488A2365291.en",linkText:"doi:10.2305/IUCN.UK.2016-1.RLTS.T19488A2365291.en",used:"Status, threats, Ask the Field Journal"},
+  iucn25:{short:"Pierce et al. 2025",authors:"Pierce, S.J., Rohner, C.A., Perry, C.T., Jabado, R.W., Norman, B., Reynolds, S., Womersley, F., Robinson, D., Graham, R. & Araujo, G.",year:"2025",title:"Rhincodon typus. The IUCN Red List of Threatened Species 2025: e.T19488A126673248.",pub:"International Union for Conservation of Nature (IUCN)",link:"https://doi.org/10.2305/IUCN.UK.2025-2.RLTS.T19488A126673248.en",linkText:"doi:10.2305/IUCN.UK.2025-2.RLTS.T19488A126673248.en",used:"Status (current assessment)"},
+  cms:{short:"CMS",authors:"Convention on the Conservation of Migratory Species of Wild Animals (CMS)",year:"current",title:"Rhincodon typus: species listing page.",pub:"UNEP / CMS Secretariat",link:"https://www.cms.int/species/rhincodon-typus",linkText:"cms.int/species/rhincodon-typus",used:"Ask the Field Journal"},
+  rowat:{short:"Rowat & Brooks 2012",authors:"Rowat, D. & Brooks, K.S.",year:"2012",title:"A review of the biology, fisheries and conservation of the whale shark Rhincodon typus.",pub:"Journal of Fish Biology 80(5): 1019–1056",link:"https://doi.org/10.1111/j.1095-8649.2012.03252.x",linkText:"doi:10.1111/j.1095-8649.2012.03252.x",used:"Anatomy, open questions, map, Ask the Field Journal"},
+  motta:{short:"Motta et al. 2010",authors:"Motta, P.J., Maslanka, M., Hueter, R.E., et al.",year:"2010",title:"Feeding anatomy, filter-feeding rate, and diet of whale sharks Rhincodon typus during surface ram filter feeding off the Yucatan Peninsula, Mexico.",pub:"Zoology 113(4): 199–212",link:"https://doi.org/10.1016/j.zool.2009.12.001",linkText:"doi:10.1016/j.zool.2009.12.001",used:"Anatomy, filter-feeding demo, Ask the Field Journal"},
+  arz:{short:"Arzoumanian et al. 2005",authors:"Arzoumanian, Z., Holmberg, J. & Norman, B.",year:"2005",title:"An astronomical pattern-matching algorithm for computer-aided identification of whale sharks Rhincodon typus.",pub:"Journal of Applied Ecology 42(6): 999–1011",link:"https://doi.org/10.1111/j.1365-2664.2005.01117.x",linkText:"doi:10.1111/j.1365-2664.2005.01117.x",used:"Spot pattern, A living constellation"},
+  mcclain:{short:"McClain et al. 2015",authors:"McClain, C.R., Balk, M.A., Benfield, M.C., et al.",year:"2015",title:"Sizing ocean giants: patterns of intraspecific size variation in marine megafauna.",pub:"PeerJ 3: e715",link:"https://doi.org/10.7717/peerj.715",linkText:"doi:10.7717/peerj.715",used:"Size and scale"},
+  guzman:{short:"Guzman et al. 2018",authors:"Guzman, H.M., Gomez, C.G., Hearn, A. & Eckert, S.A.",year:"2018",title:"Longest recorded trans-Pacific migration of a whale shark (Rhincodon typus).",pub:"Marine Biodiversity Records 11: 8",link:"https://doi.org/10.1186/s41200-018-0143-4",linkText:"doi:10.1186/s41200-018-0143-4",used:"Migration map"},
+  womersley:{short:"Womersley et al. 2022",authors:"Womersley, F.C., Humphries, N.E., Queiroz, N., et al.",year:"2022",title:"Global collision-risk hotspots of marine traffic and the world’s largest fish, the whale shark.",pub:"Proceedings of the National Academy of Sciences 119(20): e2117440119",link:"https://doi.org/10.1073/pnas.2117440119",linkText:"doi:10.1073/pnas.2117440119",used:"Threats, how to help"},
+  meekan:{short:"Meekan et al. 2022",authors:"Meekan, M.G., et al.",year:"2022",title:"The world’s largest omnivore is a fish.",pub:"Ecology 103(12): e3818",link:"https://doi.org/10.1002/ecy.3818",linkText:"doi:10.1002/ecy.3818",used:"Diet, Ask the Field Journal"},
+  ong:{short:"Ong et al. 2020",authors:"Ong, J.J.L., Meekan, M.G., Hsu, H.H., Fanning, L.P. & Campana, S.E.",year:"2020",title:"Annual bands in vertebrae validated by bomb radiocarbon assays provide estimates of age and growth of whale sharks.",pub:"Frontiers in Marine Science 7: 188",link:"https://doi.org/10.3389/fmars.2020.00188",linkText:"doi:10.3389/fmars.2020.00188",used:"Ask the Field Journal"},
+  joung:{short:"Joung et al. 1996",authors:"Joung, S.J., Chen, C.T., Clark, E., Uchida, S. & Huang, W.Y.P.",year:"1996",title:"The whale shark, Rhincodon typus, is a livebearer: 300 embryos found in one ‘megamamma’ supreme.",pub:"Environmental Biology of Fishes 46: 219–223",link:"https://doi.org/10.1007/BF00004997",linkText:"doi:10.1007/BF00004997",used:"Ask the Field Journal"},
+  tomita:{short:"Tomita et al. 2020",authors:"Tomita, T., et al.",year:"2020",title:"Armored eyes of the whale shark.",pub:"PLOS ONE 15(6): e0235342",link:"https://doi.org/10.1371/journal.pone.0235342",linkText:"doi:10.1371/journal.pone.0235342",used:"Ask the Field Journal"},
+  parra:{short:"de la Parra Venegas et al. 2011",authors:"de la Parra Venegas, R., et al.",year:"2011",title:"An unprecedented aggregation of whale sharks, Rhincodon typus, in Mexican coastal waters of the Caribbean Sea.",pub:"PLOS ONE 6(4): e18994",link:"https://doi.org/10.1371/journal.pone.0018994",linkText:"doi:10.1371/journal.pone.0018994",used:"Map, diet"},
+  acuna:{short:"Acuña-Marrero et al. 2014",authors:"Acuña-Marrero, D., et al.",year:"2014",title:"Whale shark (Rhincodon typus) seasonal presence, residence time and habitat use at Darwin Island, Galapagos Marine Reserve.",pub:"PLOS ONE 9(12): e115946",link:"https://doi.org/10.1371/journal.pone.0115946",linkText:"doi:10.1371/journal.pone.0115946",used:"Map, open questions"},
+  norman:{short:"Norman & Stevens 2007",authors:"Norman, B.M. & Stevens, J.D.",year:"2007",title:"Size and maturity status of the whale shark (Rhincodon typus) at Ningaloo Reef in Western Australia.",pub:"Fisheries Research 84(1): 81–86",link:"https://doi.org/10.1016/j.fishres.2006.11.015",linkText:"doi:10.1016/j.fishres.2006.11.015",used:"Map (Ningaloo)"},
+  mccoy:{short:"McCoy et al. 2018",authors:"McCoy, E., Burce, R., David, D., et al.",year:"2018",title:"Long-term photo-identification reveals the population dynamics and strong site fidelity of adult whale sharks to the coastal waters of Donsol, Philippines.",pub:"Frontiers in Marine Science 5: 271",link:"https://doi.org/10.3389/fmars.2018.00271",linkText:"doi:10.3389/fmars.2018.00271",used:"Map (Donsol)"},
+  perry:{short:"Perry et al. 2018",authors:"Perry, C.T., Figueiredo, J., Vaudo, J.J., et al.",year:"2018",title:"Comparing length-measurement methods and estimating growth parameters of free-swimming whale sharks (Rhincodon typus) near the South Ari Atoll, Maldives.",pub:"Marine and Freshwater Research 69(10): 1487–1495",link:"https://doi.org/10.1071/MF17393",linkText:"doi:10.1071/MF17393",used:"Map (Maldives)"},
+  rowat11:{short:"Rowat et al. 2011",authors:"Rowat, D., Brooks, K., March, A., et al.",year:"2011",title:"Long-term membership of whale sharks (Rhincodon typus) in coastal aggregations in Seychelles and Djibouti.",pub:"Marine and Freshwater Research 62(6): 621–627",link:"https://doi.org/10.1071/MF10135",linkText:"doi:10.1071/MF10135",used:"Map (Seychelles, Djibouti)"},
+  rohner:{short:"Rohner et al. 2013",authors:"Rohner, C.A., Pierce, S.J., Marshall, A.D., et al.",year:"2013",title:"Trends in sightings and environmental influences on a coastal aggregation of manta rays and whale sharks.",pub:"Marine Ecology Progress Series 482: 153–168",link:"https://doi.org/10.3354/meps10290",linkText:"doi:10.3354/meps10290",used:"Map (Mozambique)"},
+  sharkbook:{short:"Sharkbook",authors:"Wild Me",year:"ongoing",title:"Sharkbook: global photo-identification library for whale sharks (formerly Wildbook for Whale Sharks), including its guide to photographing the left side behind the gills.",pub:"Online citizen-science platform",link:"https://www.sharkbook.ai/",linkText:"sharkbook.ai",used:"Photo-ID, how to help"},
+  code:{short:"DBCA WA",authors:"Department of Biodiversity, Conservation and Attractions, Western Australia",year:"current",title:"Whale shark management in Western Australia: rules for swimming with whale sharks at Ningaloo.",pub:"Government of Western Australia",link:"https://www.dbca.wa.gov.au/wildlife-and-ecosystems/marine/whale-shark-management-western-australia",linkText:"dbca.wa.gov.au · whale shark management",used:"How to help, Ask the Field Journal"}
+};
+const SOURCE_ORDER=["iucn","iucn25","rowat","motta","arz","mcclain","guzman","womersley","meekan","ong","joung","tomita","parra","acuna","norman","mccoy","perry","rowat11","rohner","sharkbook","code","cms"];
+
+/* =========================================================
+   KNOWLEDGE BASE for Ask the Field Journal
+   kw entries may carry a weight: "word:2"
+   ========================================================= */
+const KB=[
+ {id:"danger",q:"Are whale sharks dangerous?",kw:["danger","dangerous","safe","safety","bite","attack","harm","hurt","scary","aggressive","threat:0.5","people","human","swim"],
+  a:"Whale sharks are filter feeders that eat plankton and small prey, and people swim near them on regulated tours, for example at Ningaloo in Western Australia. The documented risks mostly run the other way: collisions with ships. Local rules still ask swimmers to keep their distance: at Ningaloo, at least 3 m from the head and body and 4 m from the tail, with no touching.",src:["motta","code","womersley"]},
+ {id:"spots",q:"Why do they have spots?",kw:["spot:2","pattern","stripe","color","colour","marking","camouflage","why:0.5"],
+  a:"The field journal has no verified answer to why whale sharks evolved spots, and the reason is still unconfirmed. What is documented is how the spots are used. Each shark’s pattern is its own, so researchers identify individuals from photographs, much like fingerprints.",src:["arz"]},
+ {id:"eat",q:"How do whale sharks eat?",kw:["eat:2","feed:2","food:2","diet:2","plankton","filter","prey","hunt","mouth","krill","shrimp","copepod","omnivore","plant","algae"],
+  a:"They are filter feeders. They either swim slowly with the mouth open (ram filter feeding) or hang in the water and gulp (active suction feeding). Twenty filtering pads close off the throat and hold back small prey such as sergestid shrimp, copepods and fish larvae, and the water leaves through the gill slits. At one Mexican gathering they fed on fish eggs, and a later study found they also digest seaweed such as Sargassum.",src:["motta","parra","meekan"]},
+ {id:"unknown",q:"What do scientists still not know?",kw:["unknown:2","mystery:2","know","question","scientist","research","breed","mate","mating","born","birth","pup","nursery","where:0.5"],
+  a:"A lot about newborn and adult whale sharks is still unknown, including where they mate and give birth. At Darwin Island in the Galápagos, over 90% of the sharks recorded were adult females, and almost all showed signs of possible pregnancy. Where they go to give birth remains an open question.",src:["rowat","acuna"]},
+ {id:"help",q:"How can people help protect them?",kw:["help:2","protect:2","conserve","conservation","save","action","support","tourism","tour","volunteer"],
+  a:"Choose tour operators that follow local rules: at Ningaloo, stay at least 3 m from the head and body and 4 m from the tail, and never touch or use flash. Share encounter photos, especially the left side behind the gills, with the Sharkbook photo-ID library. And support science-based measures that reduce ship strikes and bycatch.",src:["code","sharkbook","womersley"]},
+ {id:"size",q:"How big do whale sharks get?",kw:["big:2","size:2","large","largest","long","length","biggest","huge","meter","metre","feet","heavy"],
+  a:"The whale shark is the largest living fish. The largest reliably measured individual was about 18.8 metres long.",src:["mcclain","womersley"]},
+ {id:"status",q:"Are whale sharks endangered?",kw:["endangered:2","status","iucn","red","extinct","extinction","population","decline","threatened","vulnerable"],
+  a:"Yes. The IUCN Red List classed the whale shark as Endangered in 2016, estimating that the global population had more than halved over about 75 years, with fishing and ship strikes as the main threats. IUCN published an updated assessment in 2025. Since 2017 the species has also been on Appendix I of the Convention on Migratory Species.",src:["iucn","iucn25","cms"]},
+ {id:"id",q:"How do scientists tell individuals apart?",kw:["identify:2","identification:2","apart:2","individual","recognise","recognize","photo","photograph","fingerprint","algorithm","astronomy","star","tell"],
+  a:"They photograph the spots on the flank behind the gills and above the pectoral fin, then compare them with a catalogue. One widely used method adapted a star-pattern matching algorithm from astronomy: it compares the triangles formed between spots.",src:["arz","sharkbook"]},
+ {id:"age",q:"How long do whale sharks live?",kw:["age:2","old:2","live:2","lifespan:2","life","year","grow","growth"],
+  a:"Growth bands in the vertebrae form once a year, which researchers confirmed using radiocarbon left by Cold War bomb tests. With that method, the sharks sampled were aged up to about 50 years. The maximum lifespan is still uncertain.",src:["ong"]},
+ {id:"babies",q:"Do whale sharks lay eggs?",kw:["egg:2","lay","baby:2","babies:2","young","reproduce","reproduction","pregnant","embryo","litter"],
+  a:"No. They give birth to live young. A female caught off Taiwan in 1995 carried about 300 embryos. Some were still in egg cases and others had hatched, which shows the eggs hatch inside the mother.",src:["joung"]},
+ {id:"eyes",q:"How do whale sharks protect their eyes?",kw:["eye:2","see","vision","sight","armor","armour","denticle"],
+  a:"Their eyeballs are covered in tiny tooth-like scales called dermal denticles, and they can pull their eyes back into their sockets.",src:["tomita"]},
+ {id:"fish",q:"Is a whale shark a whale?",kw:["mammal:2","fish:2","name","called","breathe"],
+  a:"No. It is a shark, and sharks are fish; it is the largest fish alive today. The name refers to its whale-like size.",src:["mcclain","womersley"]}
+];
+const FEATURED_Q=["danger","spots","eat","unknown","help"];
+const STOP=new Set("a an the is are am was were be been do does did what why how who when which can could would should will they them their it its of to in on for and or with about from whale whales shark sharks i you me my we us our be there this that these those much many any very really get got have has had give given so if not no yes than then just also some more most like".split(" "));
+function stem(w){w=w.toLowerCase();if(w.length>5&&w.endsWith("ing"))w=w.slice(0,-3);else if(w.length>4&&w.endsWith("ies"))w=w.slice(0,-3)+"y";else if(w.length>3&&w.endsWith("s")&&!w.endsWith("ss"))w=w.slice(0,-1);return w;}
+function toks(s){return (s.toLowerCase().match(/[a-z']+/g)||[]).map(w=>w.replace(/'s?$/,"")).filter(w=>w&&!STOP.has(w)).map(stem);}
+const KB_INDEX=KB.map(e=>({e,kw:new Map(e.kw.map(k=>{const [w,wt]=k.split(":");return [stem(w),wt?parseFloat(wt):1];})),qt:new Set(toks(e.q))}));
+function retrieve(query){
+  const q=[...new Set(toks(query))];
+  if(!q.length) return null;
+  let best=null;
+  for(const it of KB_INDEX){
+    let s=0; const hits=[];
+    for(const t of q){ if(it.kw.has(t)){s+=it.kw.get(t);hits.push(t);} else if(it.qt.has(t)){s+=.5;hits.push(t);} }
+    if(!best||s>best.score) best={entry:it.e,score:s,hits};
+  }
+  return best&&best.score>=1?best:null;
+}
+
+/* =========================================================
+   WHALE-SHARK GEOMETRY (lateral view, left side, head to the left)
+   Proportions: terminal mouth, small eye behind mouth corner,
+   five gill slits, first dorsal near mid-body, crescent tail.
+   ========================================================= */
+const WS={
+ body:"M58,226 C60,206 78,190 104,180 C150,163 220,152 300,146 C380,140 450,138 520,140 C610,143 700,156 780,176 C840,191 890,204 935,212 L942,214 C944,224 944,232 942,240 C895,244 850,252 800,262 C720,280 640,296 560,304 C470,311 380,312 300,306 C230,300 170,288 125,270 C95,258 72,248 60,240 C55,236 55,230 58,226 Z",
+ dorsal1:"M462,141 C490,112 525,78 556,56 C562,58 567,63 568,70 C572,95 582,122 606,148 Z",
+ dorsal2:"M790,184 C804,168 816,156 826,150 C830,165 836,180 850,194 Z",
+ pecNear:"M322,282 C350,318 395,370 458,414 C452,392 440,352 420,318 C410,302 398,294 388,292 Z",
+ pecFar:"M312,292 C332,326 366,366 414,392 C408,368 396,338 384,304 Z",
+ pelvic:"M600,300 C612,318 628,332 650,338 C648,324 648,308 660,296 Z",
+ anal:"M812,256 C820,270 832,280 848,284 C846,272 848,260 858,248 Z",
+ tail:"M936,212 C972,186 1030,130 1128,58 C1124,70 1118,82 1110,96 C1086,140 1064,182 1060,220 C1068,250 1080,284 1098,322 C1060,300 1000,268 938,244 Z",
+ belly:"M40,236 C80,244 110,249 140,254 C230,268 320,284 420,288 C560,292 720,266 950,238 L950,340 L40,340 Z",
+ ridges:["M188,176 C330,150 520,150 700,170 C800,182 880,200 944,217","M270,212 C450,197 650,206 820,222 C870,226 910,228 944,228","M356,270 C520,272 680,262 800,248 C860,241 905,237 944,236"],
+ mouth:"M57,233 C72,236 96,241 122,245",
+ lip:"M61,239 C77,243 98,247 118,250"
+};
+const GILL_X=[236,255,274,293,312];
+const TOPL=[[60,226],[80,196],[104,180],[150,165],[200,157],[300,146],[400,140],[520,140],[640,148],[780,176],[880,200],[940,212]];
+const CSL=[[60,240],[130,252],[250,272],[330,284],[420,288],[560,286],[720,264],[850,250],[940,238]];
+function interp(pts,x){if(x<=pts[0][0])return pts[0][1];for(let i=1;i<pts.length;i++){if(x<=pts[i][0]){const [x0,y0]=pts[i-1],[x1,y1]=pts[i];return y0+(y1-y0)*(x-x0)/(x1-x0);}}return pts[pts.length-1][1];}
+
+function makePattern(){
+  const r=rng(20240601); const head=[],body=[],stripes=[]; const fins={d1:[],pec:[],tail:[]};
+  for(let t=0;t<4000&&head.length<150;t++){
+    const x=66+r()*262, top=interp(TOPL,x)+5, bot=interp(CSL,x)-2; if(bot<=top) continue;
+    const y=top+r()*(bot-top);
+    if(Math.hypot(x-138,y-229)<12) continue; if(x<128&&y>230) continue;
+    if(x>228&&GILL_X.some(g=>Math.abs(x-g)<4)) continue;
+    const rad=1.5+r()*1.5+(x-66)/262*.9;
+    if(head.every(s=>Math.hypot(s[0]-x,s[1]-y)>s[2]+rad+3.2)) head.push([x,y,rad]);
+  }
+  for(let k=0;k<19;k++){
+    const x0=334+k*32.5, top=interp(TOPL,x0)+4, bot=interp(CSL,x0)+4, wob=(r()-.5)*6;
+    stripes.push("M"+f1(x0)+","+f1(top)+" C"+f1(x0+wob)+","+f1(top+(bot-top)*.35)+" "+f1(x0-wob)+","+f1(top+(bot-top)*.7)+" "+f1(x0+1.5)+","+f1(bot));
+    for(const off of [10.5,21.5]){
+      const xc=x0+off; if(xc>936) continue;
+      const t2=interp(TOPL,xc)+7, b2=interp(CSL,xc)+2, sc=Math.max(.5,1-(xc-334)/1100), step=13+(1-sc)*7;
+      let y=t2+r()*5;
+      while(y<b2){ body.push([xc+(r()-.5)*4.5,y+(r()-.5)*2.6,(2.3+r()*1.7)*sc]); y+=step+(r()-.5)*3; }
+    }
+  }
+  const scatter=(arr,x0,x1,y0,y1,n,a,b,md)=>{for(let t=0;t<n*60&&arr.length<n;t++){const x=x0+r()*(x1-x0),y=y0+r()*(y1-y0),rad=a+r()*(b-a);if(arr.every(s=>Math.hypot(s[0]-x,s[1]-y)>md))arr.push([x,y,rad]);}};
+  scatter(fins.d1,462,606,56,150,40,1.4,2.6,9);
+  scatter(fins.pec,322,458,282,414,46,1.3,2.4,8);
+  scatter(fins.tail,936,1128,58,322,70,1.2,2.2,9);
+  return {spots:head.concat(body),stripes,fins,head,body};
+}
+const PAT=makePattern();
+
+/* Shared SVG definitions, rendered once */
+function SharedDefs(){
+  return html`<svg aria-hidden="true" focusable="false" width="0" height="0" style=${{position:"absolute",width:0,height:0}}>
+   <defs>
+    <linearGradient id="w-body" x1="0" y1="130" x2="0" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stopColor="#1c3d4e"/><stop offset=".45" stopColor="#295565"/><stop offset=".8" stopColor="#3b6a77"/><stop offset="1" stopColor="#4e7e87"/>
+    </linearGradient>
+    <linearGradient id="w-fin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#22485a"/><stop offset="1" stopColor="#3a6977"/></linearGradient>
+    <linearGradient id="w-pec" x1="330" y1="285" x2="455" y2="410" gradientUnits="userSpaceOnUse"><stop offset="0" stopColor="#264f60"/><stop offset=".7" stopColor="#3b6b78"/><stop offset="1" stopColor="#5d8b91"/></linearGradient>
+    <linearGradient id="w-tailg" x1="940" y1="60" x2="1110" y2="320" gradientUnits="userSpaceOnUse"><stop offset="0" stopColor="#2a5566"/><stop offset=".5" stopColor="#21485a"/><stop offset="1" stopColor="#35626f"/></linearGradient>
+    <linearGradient id="w-spotfade" x1="0" y1="150" x2="0" y2="300" gradientUnits="userSpaceOnUse"><stop offset="0" stopColor="#fff"/><stop offset=".62" stopColor="#fff"/><stop offset=".93" stopColor="#000"/></linearGradient>
+    <mask id="w-spotmask" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="460"><rect x="0" y="0" width="1200" height="460" fill="url(#w-spotfade)"/></mask>
+    <clipPath id="w-bodyclip"><path d=${WS.body}/></clipPath>
+    <clipPath id="w-d1clip"><path d=${WS.dorsal1}/></clipPath>
+    <clipPath id="w-pecclip"><path d=${WS.pecNear}/></clipPath>
+    <clipPath id="w-tailclip"><path d=${WS.tail}/></clipPath>
+    <filter id="w-soft12" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="12"/></filter>
+    <filter id="w-soft4" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="w-rough" x="-3%" y="-6%" width="106%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="w-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9"/><feColorMatrix values="0 0 0 0 0.05  0 0 0 0 0.13  0 0 0 0 0.17  0 0 0 1.5 -0.62"/></filter>
+    <filter id="m-rough" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="2"/><feDisplacementMap in="SourceGraphic" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="m-wash" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="3"/></filter>
+    <radialGradient id="u-sun" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#f6e2a8" stopOpacity=".9"/><stop offset="1" stopColor="#f6e2a8" stopOpacity="0"/></radialGradient>
+    <linearGradient id="u-ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#e6f4ee" stopOpacity=".55"/><stop offset="1" stopColor="#e6f4ee" stopOpacity="0"/></linearGradient>
+   </defs>
+  </svg>`;
+}
+
+const INK={fill:"none",stroke:"#172226",strokeWidth:1.6,strokeLinejoin:"round",strokeLinecap:"round",filter:"url(#w-rough)"};
+const dots=(arr,fill,op)=>arr.map((s,i)=>html`<circle key=${i} cx=${f1(s[0])} cy=${f1(s[1])} r=${f1(s[2])} fill=${fill} opacity=${op}/>`);
+
+/* The benchmark illustration: layered so animated parts never force the filtered body to repaint */
+const WhaleShark=memo(function WhaleShark({animate,label,title}){
+  const spotC="#e6eee6";
+  return html`<div className=${"ws-fig"+(animate?" ws-anim":"")} role=${label?"img":undefined} aria-label=${label||undefined} aria-hidden=${label?undefined:"true"}>
+    <svg className="l-tail" viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
+      <path d=${WS.tail} fill="url(#w-tailg)"/>
+      <g clipPath="url(#w-tailclip)">
+        <path d="M940,226 C1000,190 1060,130 1120,70" stroke="#6f9aa0" strokeWidth="18" opacity=".25" fill="none" filter="url(#w-soft4)"/>
+        ${dots(PAT.fins.tail,spotC,.75)}
+      </g>
+      <path d="M880,222 C905,226 925,228 950,228" stroke="#cfe2dc" strokeWidth="2" opacity=".45" fill="none"/>
+      <path d=${WS.tail} ...${INK}/>
+    </svg>
+    <svg className="l-body" viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
+      <path d=${WS.pecFar} fill="#183746"/>
+      <path d=${WS.pecFar} ...${INK} opacity=".6"/>
+      <path d=${WS.dorsal2} fill="url(#w-fin)"/><path d=${WS.dorsal2} ...${INK}/>
+      <path d=${WS.dorsal1} fill="url(#w-fin)"/>
+      <g clipPath="url(#w-d1clip)">
+        <ellipse cx="520" cy="110" rx="50" ry="40" fill="#4f8a8a" opacity=".3" filter="url(#w-soft12)"/>
+        ${dots(PAT.fins.d1,spotC,.8)}
+      </g>
+      <path d=${WS.dorsal1} ...${INK}/>
+
+      <path d=${WS.body} fill="url(#w-body)"/>
+      <g clipPath="url(#w-bodyclip)">
+        <g filter="url(#w-soft12)">
+          <ellipse cx="420" cy="186" rx="230" ry="34" fill="#4d8f8c" opacity=".34"/>
+          <ellipse cx="720" cy="205" rx="170" ry="26" fill="#173947" opacity=".5"/>
+          <ellipse cx="190" cy="212" rx="110" ry="26" fill="#5e948b" opacity=".3"/>
+          <ellipse cx="860" cy="222" rx="80" ry="14" fill="#c9a24a" opacity=".16"/>
+          <ellipse cx="300" cy="170" rx="120" ry="16" fill="#8fc3bd" opacity=".22"/>
+        </g>
+        <path d=${WS.belly} fill="#e3e8de" filter="url(#w-soft4)"/>
+        <path d="M150,262 C300,286 500,300 700,272" stroke="#b9c9c3" strokeWidth="10" opacity=".5" fill="none" filter="url(#w-soft4)"/>
+        <path d=${WS.body} fill="none" stroke="#10283a" strokeWidth="12" strokeOpacity=".38" filter="url(#w-soft4)"/>
+        <path d="M110,184 C220,158 380,144 520,145 C640,148 760,170 900,206" stroke="#a9d6d0" strokeWidth="14" opacity=".18" fill="none" filter="url(#w-soft4)"/>
+        <g mask="url(#w-spotmask)">
+          ${PAT.stripes.map((d,i)=>html`<path key=${i} d=${d} stroke="#dfe9e1" strokeWidth="2.6" strokeLinecap="round" opacity=".7" fill="none"/>`)}
+          ${dots(PAT.spots,spotC,.9)}
+        </g>
+        <rect x="0" y="0" width="1200" height="460" filter="url(#w-grain)" opacity=".55"/>
+      </g>
+      ${WS.ridges.map((d,i)=>html`<g key=${i}><path d=${d} stroke="#10262f" strokeWidth="1.1" opacity=".35" fill="none" transform="translate(0 2.4)"/><path d=${d} stroke="#d4e5df" strokeWidth="2.2" opacity=".5" fill="none" strokeLinecap="round"/></g>`)}
+      ${GILL_X.map((x,i)=>html`<g key=${i}>
+        <path d=${"M"+x+",172 C"+(x-7)+",205 "+(x-7)+",258 "+(x+3)+",289"} stroke="#0d1f27" strokeWidth="2.8" opacity=".85" fill="none" strokeLinecap="round"/>
+        <path d=${"M"+(x+2.6)+",176 C"+(x-4.4)+",207 "+(x-4.4)+",256 "+(x+5.6)+",286"} stroke="#d8e6e0" strokeWidth="1.1" opacity=".5" fill="none" strokeLinecap="round"/>
+      </g>`)}
+      <path d=${WS.mouth} stroke="#131c20" strokeWidth="2.4" fill="none" strokeLinecap="round"/>
+      <path d=${WS.lip} stroke="#e8ede4" strokeWidth="1.4" opacity=".55" fill="none" strokeLinecap="round"/>
+      <circle cx="138" cy="229" r="5.2" fill="#13232a"/>
+      <circle cx="138" cy="229" r="6.6" fill="none" stroke="#dfe8e1" strokeWidth="1" opacity=".55"/>
+      <circle cx="136.4" cy="227.4" r="1.4" fill="#fff" opacity=".85"/>
+      <path d="M160,219 q4,-2.4 8,0" stroke="#131c20" strokeWidth="1.4" fill="none"/>
+      <path d=${WS.body} ...${INK}/>
+      <path d=${WS.pelvic} fill="url(#w-fin)"/><path d=${WS.pelvic} ...${INK}/>
+      <path d=${WS.anal} fill="url(#w-fin)"/><path d=${WS.anal} ...${INK}/>
+    </svg>
+    <svg className="l-pec" viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
+      <path d=${WS.pecNear} fill="url(#w-pec)"/>
+      <g clipPath="url(#w-pecclip)">${dots(PAT.fins.pec,spotC,.72)}
+        <path d="M388,292 C410,302 432,340 452,404" stroke="#e3ebe4" strokeWidth="3" opacity=".45" fill="none"/>
+      </g>
+      <path d=${WS.pecNear} ...${INK}/>
+    </svg>
+  </div>`;
+});
+
+/* Gold-foil emblem for journal covers */
+const EMBLEM_SPOTS=PAT.head.filter((_,i)=>i%3===0).concat(PAT.body.filter((_,i)=>i%4===0));
+const SharkEmblem=memo(function SharkEmblem(){
+  return html`<svg className="jc-emblem" viewBox="40 40 1110 390" aria-hidden="true" focusable="false">
+    <g stroke="currentColor" strokeWidth="9" strokeLinejoin="round" strokeLinecap="round">
+      <path className="em-fill" d=${WS.tail}/><path className="em-fill" d=${WS.dorsal1}/><path className="em-fill" d=${WS.dorsal2}/>
+      <path className="em-fill" d=${WS.body}/><path className="em-fill" d=${WS.pecNear}/>
+      ${GILL_X.map((x,i)=>html`<path key=${i} d=${"M"+x+",180 C"+(x-7)+",210 "+(x-7)+",255 "+(x+3)+",284"} fill="none" strokeWidth="6"/>`)}
+      <path d=${WS.mouth} fill="none" strokeWidth="6"/>
+    </g>
+    <g fill="currentColor" opacity=".85">${EMBLEM_SPOTS.map((s,i)=>html`<circle key=${i} cx=${f1(s[0])} cy=${f1(s[1])} r=${f1(s[2]*1.5)}/>`)}</g>
+  </svg>`;
+});
+
+function JournalCover(){
+  return html`<div className="jc">
+    <div className="jc-frame">
+      <p className="jc-series">Field Notes<span>From the Blue</span></p>
+      <${SharkEmblem}/>
+      <div className="jc-plate"><span className="jc-vol">Volume I</span><span className="jc-name">Whale Sharks</span><span className="jc-sub">In the Company of Gentle Giants</span></div>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   Small shared pieces
+   ========================================================= */
+function Cite({ids,onCite}){
+  return html`<span className="cites">${ids.map(id=>html`<button key=${id} type="button" className="cite" onClick=${()=>onCite(id)} aria-label=${"Source: "+SOURCES[id].short+". Opens the sources panel."}>${SOURCES[id].short}</button>`)}</span>`;
+}
+function Tag({kind,children,dk}){return html`<span className=${"tag "+kind+(dk?" dk":"")}>${children}</span>`;}
+
+function Particles({reduced,density=60,color="222,238,232",seed=5}){
+  const ref=useRef(null);
+  useEffect(()=>{
+    const cv=ref.current; if(!cv) return; const ctx=cv.getContext("2d"); let w=0,h=0,raf=0; const R=rng(seed); let ps=[];
+    const draw=t=>{ctx.clearRect(0,0,w,h);ctx.fillStyle="rgb("+color+")";for(const p of ps){ctx.globalAlpha=p.a;ctx.beginPath();ctx.arc(p.x+Math.sin(t/2600+p.ph)*7*p.sw,p.y,p.r,0,6.283);ctx.fill();}};
+    const fit=()=>{const dpr=Math.min(2,window.devicePixelRatio||1);w=cv.clientWidth;h=cv.clientHeight;if(!w||!h)return;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);const n=Math.round(density*Math.min(1.6,Math.max(.4,(w*h)/(1200*800))));ps=Array.from({length:n},()=>({x:R()*w,y:R()*h,r:.5+R()*1.6,a:.1+R()*.38,vy:.06+R()*.2,ph:R()*6.28,sw:.2+R()*.6}));draw(0);};
+    const loop=t=>{for(const p of ps){p.y+=p.vy;if(p.y>h+4){p.y=-4;p.x=R()*w;}}draw(t);raf=requestAnimationFrame(loop);};
+    fit(); window.addEventListener("resize",fit); if(!reduced) raf=requestAnimationFrame(loop);
+    return ()=>{cancelAnimationFrame(raf);window.removeEventListener("resize",fit);};
+  },[reduced,density,color,seed]);
+  return html`<canvas ref=${ref} className="particles" aria-hidden="true"></canvas>`;
+}
+
+function wavePath(y,amp,len,count,x0){let d="M"+x0+","+y;for(let i=0;i<count;i++){const x=x0+i*len;d+=" Q"+(x+len/4)+","+(y-amp)+" "+(x+len/2)+","+y+" T"+(x+len)+","+y;}return d;}
+
+function UnderwaterBg({variant}){
+  const top=variant==="deep"?"#1d6275":"#2f8690";
+  return html`<div className="bg" aria-hidden="true"><svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs><linearGradient id=${"uw-"+variant} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor=${top}/><stop offset=".38" stopColor="#15506a"/><stop offset=".75" stopColor="#0d3349"/><stop offset="1" stopColor="#0a2233"/></linearGradient></defs>
+    <rect width="1600" height="1000" fill=${"url(#uw-"+variant+")"}/>
+    <g>
+      <polygon className="ray" points="360,0 470,0 820,1000 560,1000" fill="url(#u-ray)" opacity=".5"/>
+      <polygon className="ray" points="620,0 690,0 1010,1000 850,1000" fill="url(#u-ray)" opacity=".4"/>
+      <polygon className="ray" points="880,0 1010,0 1320,1000 1060,1000" fill="url(#u-ray)" opacity=".45"/>
+      <polygon className="ray" points="1180,0 1240,0 1560,1000 1420,1000" fill="url(#u-ray)" opacity=".3"/>
+      <polygon className="ray" points="120,0 200,0 420,1000 260,1000" fill="url(#u-ray)" opacity=".3"/>
+    </g>
+    <g className="drift slow" opacity=".35"><path d=${wavePath(14,6,100,20,0)} stroke="#e8f4ef" strokeWidth="2" fill="none"/></g>
+    <rect width="1600" height="1000" fill="#0a2233" opacity=".12"/>
+  </svg></div>`;
+}
+
+/* =========================================================
+   SCENE 1 — Open the field journal
+   ========================================================= */
+function SurfaceArt(){
+  return html`<div className="bg" aria-hidden="true"><svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs>
+      <linearGradient id="s1-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#efe7d4"/><stop offset=".6" stopColor="#e4e3d2"/><stop offset="1" stopColor="#c7ddd4"/></linearGradient>
+      <linearGradient id="s1-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8fbdb7"/><stop offset="1" stopColor="#4d9598"/></linearGradient>
+      <linearGradient id="s1-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#3d9096"/><stop offset=".25" stopColor="#1f6b7e"/><stop offset=".6" stopColor="#134761"/><stop offset="1" stopColor="#0a2233"/></linearGradient>
+      <filter id="s1-cloud" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="22"/></filter>
+    </defs>
+    <rect width="1600" height="540" fill="url(#s1-sky)"/>
+    <g filter="url(#s1-cloud)" opacity=".75">
+      <ellipse cx="300" cy="190" rx="260" ry="46" fill="#fbf6ea"/>
+      <ellipse cx="1260" cy="130" rx="300" ry="40" fill="#fbf6ea"/>
+      <ellipse cx="880" cy="300" rx="360" ry="34" fill="#f5efe0"/>
+      <ellipse cx="1180" cy="330" rx="200" ry="26" fill="#e9d7a8" opacity=".6"/>
+    </g>
+    <circle cx="1230" cy="200" r="150" fill="url(#u-sun)" opacity=".7"/>
+    <g stroke="#58524a" strokeWidth="1.3" fill="none" opacity=".55" strokeLinecap="round">
+      <path d="M1040,260 q10,-8 20,0 q10,-8 20,0"/><path d="M1100,236 q7,-6 14,0 q7,-6 14,0"/>
+    </g>
+    <rect y="430" width="1600" height="100" fill="url(#s1-sea)"/>
+    <line x1="0" y1="430" x2="1600" y2="430" stroke="#4d7f80" strokeWidth="1.2" opacity=".6"/>
+    <g className="drift slow" opacity=".45" stroke="#2f6468" fill="none" strokeWidth="1.3">
+      <path d=${wavePath(446,3,70,26,0)}/><path d=${wavePath(468,4,110,18,-40)}/><path d=${wavePath(494,6,160,13,-80)}/>
+    </g>
+    <g className="drift" opacity=".7" stroke="#eef6f1" fill="none" strokeWidth="1.6" strokeLinecap="round">
+      <path d=${wavePath(478,3,90,22,0)} strokeDasharray="30 60"/><path d=${wavePath(508,5,140,15,-70)} strokeDasharray="40 90"/>
+    </g>
+    <g stroke="#c9a24a" strokeWidth="2" opacity=".7" strokeLinecap="round"><line x1="1150" y1="452" x2="1180" y2="452"/><line x1="1250" y1="470" x2="1296" y2="470"/><line x1="1190" y1="492" x2="1214" y2="492"/></g>
+    <rect y="524" width="1600" height="476" fill="url(#s1-water)"/>
+    <g>
+      <polygon className="ray" points="420,530 520,530 760,1000 520,1000" fill="url(#u-ray)" opacity=".42"/>
+      <polygon className="ray" points="760,530 820,530 1040,1000 900,1000" fill="url(#u-ray)" opacity=".35"/>
+      <polygon className="ray" points="1100,530 1220,530 1480,1000 1250,1000" fill="url(#u-ray)" opacity=".4"/>
+      <polygon className="ray" points="160,530 230,530 380,1000 250,1000" fill="url(#u-ray)" opacity=".28"/>
+    </g>
+    <g className="drift">
+      <path d=${wavePath(526,7,120,17,0)+" L2040,540 L0,540 Z"} fill="#9fd0c9" opacity=".55"/>
+      <path d=${wavePath(526,7,120,17,0)} stroke="#f2faf6" strokeWidth="2.4" fill="none" opacity=".85"/>
+    </g>
+  </svg></div>`;
+}
+
+function SceneJournal({reduced,opening,onOpen}){
+  return html`<section className="scene s1" aria-labelledby="s1-title">
+    <${SurfaceArt}/>
+    <div className="s1-shark"><${WhaleShark} animate=${!reduced} label="A whale shark glides beneath the surface, seen as a large spotted shadow under the floating journal."/></div>
+    <div className="s1-haze"></div>
+    <${Particles} reduced=${reduced} density=${30} seed=${3}/>
+    <div className="s1-top">
+      <div className="journal-wrap">
+        <div className=${"journal"+(opening?" opening":"")}>
+          <div className="ribbon" aria-hidden="true"></div>
+          <div className="jpage" aria-hidden="true">
+            <span className="hand">Vol. I</span>
+            <span className="hand">Whale sharks</span>
+            <hr/>
+            <span className="hand" style=${{fontSize:"0.8em",color:"#6a6558"}}>descending…</span>
+          </div>
+          <div className="jcover"><${JournalCover}/></div>
+        </div>
+        <div className="jshadow" aria-hidden="true"></div>
+      </div>
+      <div className="s1-copy">
+        <p className="kicker">An illustrated field documentary</p>
+        <h1 id="s1-title" className="vh">Field Notes From the Blue</h1>
+        <p className="intro">Six short chapters, about five minutes. Watercolor plates, a little field science, and a source for every fact.</p>
+        <button type="button" className="btn btn-primary" onClick=${onOpen}>Open Volume I: Whale Sharks</button>
+        <p className="hand" aria-hidden="true">something large is passing beneath us</p>
+      </div>
+    </div>
+  </section>`;
+}
+
+/* =========================================================
+   SCENE 2 — Meet a gentle giant
+   ========================================================= */
+const U_PER_M=(1128-57)/9; // illustrated individual drawn as ~9 m
+function Snorkeler(){
+  return html`<g fill="#0e2836" opacity=".88">
+    <circle cx="12" cy="20" r="9"/>
+    <path d="M14,11 C14,4 16,-4 18,-12" stroke="#0e2836" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    <path d="M20,15 C36,11 62,11 90,14 C100,15 106,16 112,17 L112,27 C104,28 96,28 88,28 C62,30 38,29 21,26 Z"/>
+    <path d="M28,24 C40,30 52,33 64,33 L64,37 C50,37 38,34 26,29 Z"/>
+    <path d="M110,16 C130,15 150,14 168,14 L168,20 C150,21 132,22 112,24 Z"/>
+    <path d="M110,21 C130,22 150,24 166,27 L165,31 C148,30 130,29 110,27 Z"/>
+    <path d="M166,12 L200,6 L197,20 L168,21 Z"/><path d="M164,26 L198,32 L191,41 L163,32 Z"/>
+    <rect x="2" y="16" width="9" height="6" rx="2" fill="#cf9f45"/>
+  </g>`;
+}
+function SceneGiant({reduced,scaleOn,onScale,onCite}){
+  const snorkelLen=1.7*U_PER_M; const sx=640, sy=-44, sScale=snorkelLen/200;
+  const ticks=[0,3,6,9];
+  return html`<section className="scene s2 dark" aria-labelledby="s2-title">
+    <${UnderwaterBg} variant="shallow"/>
+    <${Particles} reduced=${reduced} density=${70} seed=${8}/>
+    <div className="scene-inner">
+      <header className="s2-copy">
+        <p className="kicker">Volume I · Chapter 1</p>
+        <h2 id="s2-title" className="display" tabIndex="-1">Meet a gentle giant</h2>
+        <blockquote className="statement"><p>Whale sharks are my favorite animals because they are gentle giants: immense, peaceful, and quietly extraordinary.</p></blockquote>
+      </header>
+      <figure className="s2-figure">
+        <div className="s2-stage">
+          <${WhaleShark} animate=${!reduced} label="Watercolor and ink illustration of an adult whale shark swimming to the left: a broad flat head with a wide mouth at the very front, dark blue-grey back covered in pale spots and stripes, a pale belly, long ridges along the flank, five gill slits, a tall first dorsal fin and a crescent-shaped tail. A small snorkeler floats near the surface above it for scale."/>
+          <svg className="over" viewBox="0 -80 1200 620" aria-hidden="true" focusable="false">
+            <path d=${wavePath(-70,4,80,16,0)} stroke="#e8f4ef" strokeWidth="1.5" fill="none" opacity=".45"/>
+            <g transform=${"translate("+sx+" "+sy+") scale("+f1(sScale*100)/100+")"}><${Snorkeler}/></g>
+            ${scaleOn&&html`<g className="fade-in" fontFamily="DM Mono, monospace" fontSize="15" fill="#e8c67f">
+              <line x1=${sx} y1="-4" x2=${sx+snorkelLen} y2="-4" stroke="#e8c67f" strokeWidth="1.5"/>
+              <line x1=${sx} y1="-10" x2=${sx} y2="2" stroke="#e8c67f" strokeWidth="1.5"/><line x1=${sx+snorkelLen} y1="-10" x2=${sx+snorkelLen} y2="2" stroke="#e8c67f" strokeWidth="1.5"/>
+              <text x=${sx+snorkelLen+10} y="1">1.7 m snorkeler</text>
+              <line x1="57" y1="490" x2="1128" y2="490" stroke="#e8c67f" strokeWidth="1.5"/>
+              ${ticks.map(m=>html`<g key=${m}><line x1=${57+m*U_PER_M} y1="482" x2=${57+m*U_PER_M} y2="498" stroke="#e8c67f" strokeWidth="1.5"/><text x=${57+m*U_PER_M} y="520" textAnchor="middle">${m} m</text></g>`)}
+              ${[1,2,4,5,7,8].map(m=>html`<line key=${m} x1=${57+m*U_PER_M} y1="486" x2=${57+m*U_PER_M} y2="494" stroke="#e8c67f" strokeWidth="1"/>`)}
+            </g>`}
+          </svg>
+        </div>
+        <figcaption className="s2-caption">
+          <p className="specimen"><i>Rhincodon typus</i>, the whale shark: a shark, and the largest living fish. It feeds by filtering plankton and small prey from the water. <${Cite} ids=${["mcclain","womersley","motta"]} onCite=${onCite}/></p>
+          <div style=${{display:"flex",gap:"10px",alignItems:"center",flexWrap:"wrap"}}>
+            <${Tag} kind="illus" dk=${true}>Illustration · artistic motion<//>
+            <button type="button" className="btn" aria-pressed=${scaleOn} onClick=${onScale}>${scaleOn?"Hide scale":"Compare scale"}</button>
+          </div>
+          ${scaleOn&&html`<p className="scale-note fade-in" role="status">Drawn to scale: this illustrated shark is about 9 m long beside a 1.7 m snorkeler. The largest reliably measured whale shark was about 18.8 m, roughly twice this size. <${Cite} ids=${["mcclain"]} onCite=${onCite}/></p>`}
+        </figcaption>
+      </figure>
+    </div>
+  </section>`;
+}
+
+/* =========================================================
+   SCENE 3 — Anatomy and filter feeding
+   ========================================================= */
+const HOTSPOTS=[
+ {id:"spots",n:1,label:"Spot pattern",x:560,y:208,title:"A pattern of its own",text:"Pale spots and stripes cover the dark back and fade into a pale belly. Each shark’s pattern is its own, so researchers can recognise individuals from photographs.",cite:["arz"],
+  marks:[{t:"spots & stripes",x:640,y:118,lx:590,ly:196}]},
+ {id:"mouth",n:2,label:"Mouth",x:70,y:236,title:"A mouth at the front",text:"The wide mouth sits at the very front of the broad, flat head rather than underneath, as it does in many sharks. It gapes open to take in water while the shark feeds at or near the surface.",cite:["motta"],
+  marks:[{t:"mouth at the front",x:14,y:150,lx:66,ly:226}]},
+ {id:"gills",n:3,label:"Gills",x:274,y:222,title:"Five pairs of gill slits",text:"Water taken in through the mouth meets twenty filtering pads that close off the throat like a sieve. They hold back plankton and small prey, and the strained water flows out through five long gill slits on each side.",cite:["motta"],
+  marks:[{t:"five gill slits",x:196,y:120,lx:250,ly:170}]},
+ {id:"fins",n:4,label:"Fins & tail",x:1062,y:156,title:"Built for slow cruising",text:"A tall first dorsal fin, broad pectoral fins and a crescent-shaped tail with a longer upper lobe. Prominent ridges run along the back and flanks.",cite:["rowat"],
+  marks:[{t:"first dorsal fin",x:590,y:44,lx:562,ly:70},{t:"pectoral fin",x:478,y:440,lx:440,ly:396},{t:"crescent tail",x:850,y:100,lx:1000,ly:150}]}
+];
+
+function PlateLabels({active}){
+  return html`<svg className="labels" viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
+    ${HOTSPOTS.map(h=>h.marks.map((m,i)=>{const on=active===h.id;return html`<g key=${h.id+i} opacity=${on?1:.42}>
+      <line x1=${m.lx} y1=${m.ly} x2=${m.x+(m.x<m.lx?60:0)} y2=${m.y+6} stroke="#26282a" strokeWidth=${on?1.4:1} strokeDasharray=${on?"":"3 4"}/>
+      <text x=${m.x} y=${m.y} fontFamily="Caveat, cursive" fontSize="30" fill=${on?"#a3452f":"#47463f"}>${m.t}</text>
+    </g>`;}))}
+  </svg>`;
+}
+
+function FeedingDemo({reduced,onCite}){
+  const cvRef=useRef(null);
+  const [playing,setPlaying]=useState(!reduced);
+  const [step,setStep]=useState(0);
+  const [count,setCount]=useState(0);
+  const st=useRef({playing:!reduced,step:0});
+  useEffect(()=>{setPlaying(!reduced);},[reduced]);
+  useEffect(()=>{st.current.playing=playing;st.current.step=step;},[playing,step]);
+  useEffect(()=>{
+    const cv=cvRef.current; if(!cv) return; const ctx=cv.getContext("2d"); const W=560,H=300; let raf=0; const R=rng(99);
+    const parts=[]; const stuck=[]; const gulp=[]; let eaten=0,shown=-1;
+    for(let i=0;i<6;i++) stuck.push({x:326-R()*4,y:112+R()*84});
+    const lower=[]; // sample the lower outline for slit gaps
+    const cub=(p0,p1,p2,p3,t)=>{const u=1-t;return u*u*u*p0+3*u*u*t*p1+3*u*t*t*p2+t*t*t*p3;};
+    for(let i=0;i<=40;i++){const t=i/40;lower.push([cub(70,95,160,250,t),cub(190,215,238,244,t)]);}
+    for(let i=1;i<=40;i++){const t=i/40;lower.push([cub(250,350,450,560,t),cub(244,250,250,246,t)]);}
+    const SL=[372,392,412,432,452];
+    const fit=()=>{const dpr=Math.min(2,window.devicePixelRatio||1);const cw=cv.clientWidth||W;cv.width=Math.round(cw*dpr);cv.height=Math.round(cw*H/W*dpr);ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);};
+    const arrow=(x1,y1,x2,y2,col)=>{ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();const a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(a-.4),y2-9*Math.sin(a-.4));ctx.lineTo(x2-9*Math.cos(a+.4),y2-9*Math.sin(a+.4));ctx.closePath();ctx.fill();};
+    const label=(t,x,y,col)=>{ctx.fillStyle=col||"#47463f";ctx.font="600 19px Caveat, 'Segoe Print', cursive";ctx.fillText(t,x,y);};
+    function update(){
+      if(R()<.6){const p=R()<.17;parts.push({p,x:-6-R()*20,y:118+R()*66,vx:1.3+R()*.5,gx:SL[Math.floor(R()*5)],a:1});}
+      for(let i=parts.length-1;i>=0;i--){const q=parts[i];
+        if(q.x<326){q.x+=q.vx;q.y+=(152-q.y)*.0025+(R()-.5)*.35;q.y=Math.max(116,Math.min(188,q.y));}
+        else if(q.p){stuck.push({x:326-R()*4,y:Math.max(108,Math.min(196,q.y))});parts.splice(i,1);}
+        else{q.x+=(q.gx-q.x)*.035+.3;q.y+=1.5;if(q.y>250)q.a-=.045;if(q.a<=0){parts.splice(i,1);}}
+      }
+      if(stuck.length>=12){while(stuck.length){const s=stuck.pop();gulp.push({x:s.x,y:s.y,ph:0});}}
+      for(let i=gulp.length-1;i>=0;i--){const g=gulp[i];if(g.ph===0){g.x+=(356-g.x)*.12+.4;g.y+=(152-g.y)*.12;if(Math.abs(g.y-152)<3&&g.x>350)g.ph=1;}else{g.x+=2.2;g.y+=(152-g.y)*.2;if(g.x>556){gulp.splice(i,1);eaten++;}}}
+    }
+    function render(){
+      const s=st.current.step, playingNow=st.current.playing;
+      ctx.clearRect(0,0,W,H);
+      // head wash
+      ctx.beginPath();ctx.moveTo(70,112);ctx.bezierCurveTo(90,92,150,72,240,66);ctx.bezierCurveTo(330,60,440,58,560,62);ctx.lineTo(560,246);
+      for(let i=lower.length-1;i>=0;i--) ctx.lineTo(lower[i][0],lower[i][1]);
+      ctx.closePath();ctx.fillStyle="rgba(47,98,108,0.16)";ctx.fill();
+      // pharynx + gill chamber (interior)
+      ctx.beginPath();ctx.moveTo(78,118);ctx.bezierCurveTo(150,104,250,100,330,104);ctx.lineTo(352,104);ctx.bezierCurveTo(400,110,450,160,470,246);ctx.lineTo(360,246);ctx.bezierCurveTo(354,230,352,212,352,200);ctx.lineTo(330,200);ctx.bezierCurveTo(250,204,150,200,78,184);ctx.closePath();
+      ctx.fillStyle="rgba(250,245,234,0.9)";ctx.fill();
+      // esophagus
+      ctx.fillStyle="rgba(250,245,234,0.9)";ctx.fillRect(452,141,108,22);
+      ctx.strokeStyle="rgba(38,40,42,.55)";ctx.lineWidth=1.2;ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(78,118);ctx.bezierCurveTo(150,104,250,100,330,104);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(78,184);ctx.bezierCurveTo(150,200,250,204,330,200);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(452,141);ctx.lineTo(560,141);ctx.moveTo(452,163);ctx.lineTo(560,163);ctx.stroke();
+      ctx.setLineDash([]);
+      // highlights for steps
+      const glow="rgba(207,159,69,0.28)";
+      if(s===1){ctx.fillStyle=glow;ctx.beginPath();ctx.ellipse(170,152,120,46,0,0,6.283);ctx.fill();}
+      if(s===2){ctx.fillStyle=glow;ctx.fillRect(318,96,46,112);}
+      if(s===3){ctx.fillStyle=glow;ctx.beginPath();ctx.ellipse(412,246,64,20,0,0,6.283);ctx.fill();}
+      // filter pads
+      ctx.save();ctx.beginPath();ctx.rect(330,102,22,100);ctx.clip();
+      ctx.fillStyle="rgba(210,112,90,0.25)";ctx.fillRect(330,102,22,100);
+      ctx.strokeStyle="rgba(163,69,47,.55)";ctx.lineWidth=.8;
+      for(let k=-100;k<120;k+=5){ctx.beginPath();ctx.moveTo(330,102+k);ctx.lineTo(352,124+k);ctx.stroke();ctx.beginPath();ctx.moveTo(352,102+k);ctx.lineTo(330,124+k);ctx.stroke();}
+      ctx.restore();
+      ctx.strokeStyle="#2a2b2c";ctx.lineWidth=1.3;ctx.strokeRect(330,102,22,100);
+      [127,152,177].forEach(y=>{ctx.beginPath();ctx.moveTo(330,y);ctx.lineTo(352,y);ctx.stroke();});
+      // outline, upper
+      ctx.strokeStyle="#26282a";ctx.lineWidth=2.2;ctx.lineCap="round";
+      ctx.beginPath();ctx.moveTo(62,106);ctx.quadraticCurveTo(66,110,70,112);ctx.bezierCurveTo(90,92,150,72,240,66);ctx.bezierCurveTo(330,60,440,58,560,62);ctx.stroke();
+      // lower outline with gill-slit gaps
+      ctx.beginPath();let pen=false;
+      ctx.moveTo(62,197);ctx.quadraticCurveTo(66,193,70,190);
+      for(const [x,y] of lower){const gap=SL.some(g=>Math.abs(x-g)<5);if(gap){pen=false;continue;} if(!pen){ctx.moveTo(x,y);pen=true;} else ctx.lineTo(x,y);}
+      ctx.stroke();
+      SL.forEach(g=>{ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(g-6,248);ctx.quadraticCurveTo(g-10,238,g-4,232);ctx.stroke();});
+      // eye
+      ctx.fillStyle="#1c2a30";ctx.beginPath();ctx.arc(104,94,4,0,6.283);ctx.fill();
+      // particles
+      for(const q of parts){
+        if(q.p){ctx.fillStyle="#c05a3c";ctx.beginPath();ctx.arc(q.x,q.y,2.4,0,6.283);ctx.fill();ctx.strokeStyle="rgba(192,90,60,.8)";ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(q.x+1,q.y-1);ctx.lineTo(q.x+5,q.y-4);ctx.moveTo(q.x+1,q.y+1);ctx.lineTo(q.x+5,q.y+4);ctx.stroke();}
+        else{ctx.strokeStyle="rgba(40,120,128,"+(.55*q.a)+")";ctx.lineWidth=1.4;ctx.beginPath();if(q.x<326){ctx.moveTo(q.x-7,q.y);ctx.lineTo(q.x,q.y);}else{ctx.moveTo(q.x-2,q.y-6);ctx.lineTo(q.x,q.y);}ctx.stroke();}
+      }
+      ctx.fillStyle="#c05a3c";
+      for(const p of stuck){ctx.beginPath();ctx.arc(p.x,p.y,2.4,0,6.283);ctx.fill();}
+      for(const g of gulp){ctx.beginPath();ctx.arc(g.x,g.y,2.4,0,6.283);ctx.fill();}
+      // static guide arrows
+      if(!playingNow||s){
+        const c1=s===1?"#a3452f":"#285c63", c2=s===2?"#a3452f":"#285c63", c3=s===3?"#a3452f":"#285c63";
+        arrow(8,152,110,152,c1);arrow(160,152,312,152,c1);
+        arrow(362,122,420,160,c2);
+        arrow(392,196,402,270,c3);arrow(432,196,446,270,c3);
+        arrow(470,152,540,152,"#6a6558");
+      }
+      label("water in",8,138,s===1?"#a3452f":undefined);
+      label("filter pads",300,90,s===2?"#a3452f":undefined);
+      label("gill slits",372,292,s===3?"#a3452f":undefined);
+      label("to stomach",476,132);
+      if(eaten!==shown){shown=eaten;setCount(eaten);}
+    }
+    fit(); window.addEventListener("resize",fit);
+    const frame=()=>{if(st.current.playing) update(); render(); raf=requestAnimationFrame(frame);};
+    raf=requestAnimationFrame(frame);
+    return ()=>{cancelAnimationFrame(raf);window.removeEventListener("resize",fit);};
+  },[]);
+  const STEPS=["Water flows in","Pads trap prey","Water exits the gills"];
+  const STEP_TEXT=["Press a step to follow the water, or play the model.","The shark swims with its mouth open, so water streams in (ram filter feeding). It can also hang still and gulp (suction feeding).","Filtering pads inside the gills act like a sieve, holding back plankton, which the shark then swallows.","Strained water leaves through the gill slits on both sides of the head."];
+  return html`<div className="demo">
+    <h3>Fig. 2 · Filter feeding, cut-away</h3>
+    <canvas ref=${cvRef} role="img" aria-label="Cut-away diagram of a whale shark head: water enters the open mouth, passes filtering pads inside the gills where plankton is caught, and leaves through five gill slits. Caught plankton moves on toward the stomach."></canvas>
+    <div className="demo-controls">
+      <button type="button" className="btn btn-primary" aria-pressed=${playing} onClick=${()=>setPlaying(p=>!p)}>${playing?"Pause model":"Play model"}</button>
+      ${STEPS.map((t,i)=>html`<button key=${i} type="button" className="btn" aria-pressed=${step===i+1} onClick=${()=>setStep(s=>s===i+1?0:i+1)}>${(i+1)+" · "+t}</button>`)}
+      <span className="counter" aria-hidden="true">prey swallowed: ${count}</span>
+    </div>
+    <p className="step-text" aria-live="polite">${STEP_TEXT[step]} ${step===1||step===2||step===3?html`<${Cite} ids=${["motta"]} onCite=${onCite}/>`:null}</p>
+    <div className="figcap"><${Tag} kind="illus">Illustrative model, not to scale<//></div>
+  </div>`;
+}
+
+function SceneAnatomy({reduced,hot,setHot,onCite}){
+  const h=HOTSPOTS.find(x=>x.id===hot)||HOTSPOTS[0];
+  return html`<section className="scene s3" aria-labelledby="s3-title">
+    <div className="bg deepbg"></div>
+    <${Particles} reduced=${reduced} density=${40} seed=${11}/>
+    <div className="scene-inner">
+      <article className="page on-paper">
+        <header className="page-head">
+          <div><p className="kicker">Chapter 2 · Plate II</p><h2 id="s3-title" tabIndex="-1">Anatomy of a filter feeder</h2></div>
+          <span className="folio">Rhincodon typus · left lateral view</span>
+        </header>
+        <div className="grid-plate">
+          <figure className="plate-fig">
+            <div className="plate-art">
+              <${WhaleShark} animate=${false} label="Scientific plate of a whale shark in side view with four numbered hotspots: spot pattern, mouth, gills, and fins and tail."/>
+              <${PlateLabels} active=${h.id}/>
+              ${HOTSPOTS.map(p=>html`<button key=${p.id} type="button" className="hot" style=${{left:(p.x/1200*100)+"%",top:(p.y/460*100)+"%"}} aria-pressed=${p.id===h.id} aria-label=${"Hotspot "+p.n+": "+p.label} onClick=${()=>setHot(p.id)}><span aria-hidden="true">${p.n}</span></button>`)}
+            </div>
+            <div className="hot-list" role="group" aria-label="Anatomy hotspots">
+              ${HOTSPOTS.map(p=>html`<button key=${p.id} type="button" className="btn" aria-pressed=${p.id===h.id} onClick=${()=>setHot(p.id)}>${p.n+" · "+p.label}</button>`)}
+            </div>
+            <figcaption className="figcap">Fig. 1 · Adult whale shark, watercolor and ink. <${Tag} kind="illus">Illustration<//> Proportions follow published descriptions; spot layout is invented for this drawing.</figcaption>
+          </figure>
+          <div>
+            <div className="note" aria-live="polite">
+              <span className="note-num">${h.n+" · "+h.label}</span>
+              <h3>${h.title}</h3>
+              <p>${h.text} <${Cite} ids=${h.cite} onCite=${onCite}/></p>
+            </div>
+            <${FeedingDemo} reduced=${reduced} onCite=${onCite}/>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>`;
+}
+
+/* =========================================================
+   SCENE 4 — A living constellation
+   ========================================================= */
+function genSwatch(seed,n,stripes){
+  const r=rng(seed); const pts=[];
+  for(let t=0;t<4000&&pts.length<n;t++){
+    const p=[14+r()*80,5+r()*50,1.3+r()*1.4];
+    if(stripes.some(s=>Math.abs(p[0]-s-p[1]*.04)<2.6)) continue;
+    if(Math.abs(p[1]-17)<2.4) continue;
+    if(pts.every(q=>Math.hypot(q[0]-p[0],q[1]-p[1])>8.5)) pts.push(p);
+  }
+  return pts;
+}
+const REF_STRIPES=[25,44,63,82];
+const REF=genSwatch(41,17,REF_STRIPES);
+const DROP=new Set([4,12]);
+const NEAR=REF.filter((_,i)=>[0,1,2,5,6,9,10].includes(i)).concat(genSwatch(97,10,REF_STRIPES).slice(0,10));
+const OTHER_STRIPES=[18,38,59,80];
+const OTHER=genSwatch(203,17,OTHER_STRIPES);
+const TRIS=[[0,2,5],[2,5,9],[5,9,13],[1,6,10],[9,13,15]].filter(t=>t.every(i=>i<REF.length&&!DROP.has(i)));
+function Swatch({pts,stripes,ridge=17,tf,tris,label,idp}){
+  return html`<svg className="swatch" viewBox="0 0 100 60" role=${label?"img":undefined} aria-label=${label||undefined} aria-hidden=${label?undefined:"true"} focusable="false">
+    <defs><linearGradient id=${idp+"-g"} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#23485a"/><stop offset="1" stopColor="#35616e"/></linearGradient></defs>
+    <rect width="100" height="60" fill=${"url(#"+idp+"-g)"}/>
+    <g transform=${tf||""}>
+      <path d="M-10,${ridge} C20,${ridge-2} 70,${ridge+1} 120,${ridge-1}" stroke="#d4e5df" strokeWidth=".9" opacity=".55" fill="none"/>
+      ${stripes.map((s,i)=>html`<path key=${i} d=${"M"+s+",-10 L"+(s+2.8)+",70"} stroke="#dfe9e1" strokeWidth="1.1" opacity=".65"/>`)}
+      <path d="M6,-10 C2,20 2,40 7,70" stroke="#0d1f27" strokeWidth="1.6" fill="none"/>
+      ${pts.map((p,i)=>p&&html`<circle key=${i} cx=${f1(p[0])} cy=${f1(p[1])} r=${p[2].toFixed(2)} fill="#e8efe7"/>`)}
+      ${tris&&tris.map((t,i)=>html`<polygon key=${"t"+i} points=${t.map(k=>f1(REF[k][0])+","+f1(REF[k][1])).join(" ")} fill="rgba(232,198,127,.14)" stroke="#e8c67f" strokeWidth=".6" strokeLinejoin="round"/>`)}
+    </g>
+    <rect width="100" height="60" fill="none" stroke="rgba(0,0,0,.25)"/>
+  </svg>`;
+}
+const CANDS=[
+ {id:"A",pts:NEAR,stripes:REF_STRIPES,tf:"translate(-3 2)",right:false,msg:"Not quite. A few spots in A line up with the reference, but most of the triangles between spots don’t match. This is a different shark with a similar density of spots."},
+ {id:"B",pts:REF.map((p,i)=>DROP.has(i)?null:p),stripes:REF_STRIPES,tf:"translate(50 30) rotate(8) scale(.86) translate(-50 -30) translate(5 2)",right:true,msg:"A match. Sighting B shows the same shark, photographed from a slightly different angle and distance. The spots look rotated and closer together, and two are hidden, but the triangles between them keep their shapes. Matching triangle shapes is the idea researchers borrowed from star-pattern matching in astronomy."},
+ {id:"C",pts:OTHER,stripes:OTHER_STRIPES,ridge:22,tf:"",right:false,msg:"Not this one. C’s stripes and spot spacing differ everywhere, so almost none of the triangles match. A different individual."}
+];
+function SceneConstellation({reduced,choice,setChoice,tri,setTri,onCite}){
+  const pick=CANDS.find(c=>c.id===choice);
+  const solved=pick&&pick.right;
+  return html`<section className="scene s4" aria-labelledby="s4-title">
+    <div className="bg deepbg"></div>
+    <${Particles} reduced=${reduced} density=${40} seed=${13}/>
+    <div className="scene-inner">
+      <article className="page on-paper">
+        <header className="page-head">
+          <div><p className="kicker">Chapter 3 · Field science</p><h2 id="s4-title" tabIndex="-1">A living constellation</h2></div>
+          <span className="folio">Photo-identification exercise</span>
+        </header>
+        <div className="grid-id">
+          <div>
+            <p className="body">No two whale sharks share a spot pattern. Researchers photograph a standard patch of skin, behind the last gill slit and above the pectoral fin, and compare it with a catalogue of known sharks. <${Cite} ids=${["arz","sharkbook"]} onCite=${onCite}/></p>
+            <p className="body" style=${{marginTop:"10px"}}>A method adapted from astronomy treats the spots like stars and compares the triangles they form. Triangle shapes stay the same when a photo is taken from a slightly different angle or distance. <${Cite} ids=${["arz"]} onCite=${onCite}/></p>
+            <div className="id-thumb">
+              <${WhaleShark} animate=${false} label="Small whale shark outline with the reference area highlighted: the flank just behind the fifth gill slit and above the pectoral fin."/>
+              <svg className="over" viewBox="0 0 1200 460" aria-hidden="true" focusable="false">
+                <rect x="318" y="168" width="150" height="104" fill="rgba(232,198,127,.18)" stroke="#a3452f" strokeWidth="3" strokeDasharray="10 7"/>
+                <text x="318" y="152" fontFamily="Caveat, cursive" fontSize="38" fill="#a3452f">reference area</text>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div className="ref-wrap">
+              <div className="swatch-label"><span>Catalogue reference</span><span>left flank</span></div>
+              <${Swatch} idp="ref" pts=${REF} stripes=${REF_STRIPES} tris=${solved&&tri?TRIS:null} label="Reference photograph: pale spots on dark skin between vertical stripes, with the last gill slit at the left edge."/>
+            </div>
+            <p className="body" style=${{marginTop:"14px",fontWeight:500,color:"var(--ink)"}} id="cand-q">Which new sighting shows the same shark?</p>
+            <div className="cands" role="group" aria-labelledby="cand-q">
+              ${CANDS.map((c,i)=>html`<button key=${c.id} id=${"cand-"+c.id} type="button" className=${"cand"+(choice===c.id?(c.right?" right":" wrong"):"")} aria-pressed=${choice===c.id} onClick=${()=>setChoice(c.id)}>
+                <${Swatch} idp=${"c"+c.id} pts=${c.pts} stripes=${c.stripes} ridge=${c.ridge} tf=${c.tf} tris=${c.right&&solved&&tri?TRIS:null}/>
+                <span className="cand-name">Sighting ${c.id}</span>
+              </button>`)}
+            </div>
+            <div className="verdict" aria-live="polite">
+              ${pick?html`<strong>${pick.right?"Same shark.":"Different shark."}</strong>${pick.msg} <${Cite} ids=${["arz"]} onCite=${onCite}/>`:html`<span>Compare the reference with each sighting. Look at groups of three spots rather than single spots.</span>`}
+            </div>
+            <div className="id-actions">
+              ${solved&&html`<button type="button" className="btn" aria-pressed=${tri} onClick=${()=>setTri(t=>!t)}>${tri?"Hide triangles":"Show matching triangles"}</button>`}
+              ${pick&&!pick.right&&html`<button type="button" className="btn" onClick=${()=>{setChoice(null);setTimeout(()=>{const el=document.getElementById("cand-A");el&&el.focus();},0);}}>Try again</button>`}
+            </div>
+            <div className="figcap"><${Tag} kind="illus">Illustrative patterns<//> Drawn for this exercise, not real catalogue photos.</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>`;
+}
+
+/* =========================================================
+   SCENE 5 — Science, mystery and protection (map)
+   ========================================================= */
+const LAND=[
+ [-130,55,-127,50,-124.5,46,-124.2,42,-122.5,37.6,-120.6,34.5,-117.2,32.6,-115.8,30.2,-114.2,27.8,-112.2,25,-110,23,-109.5,24.5,-112,27.3,-114.6,31.5,-112.8,30,-111,27.5,-109.4,25.8,-106,23,-105.4,20.5,-104,19,-101,17.6,-98,16.2,-95,16,-92.5,14.6,-91,13.9,-88,13.2,-87.5,12.9,-85.8,11.2,-85.8,10.2,-84.8,9.6,-83.6,8.5,-81.6,7.6,-80.2,7.3,-79.9,8.4,-78.3,8.2,-77.4,7.9,-77.9,9.2,-79.6,9.6,-81.2,8.9,-82.3,9.5,-83.6,10.9,-83.4,13.5,-83.2,15,-84.5,15.9,-86.5,15.9,-88.2,15.7,-88.3,17.5,-87.9,18.6,-87.4,20.2,-86.8,21.4,-87.6,21.5,-90.3,21.1,-90.5,19.8,-91.4,18.5,-94.5,18.2,-95.8,18.8,-97.2,20.6,-97.8,22.5,-97.6,25.5,-97.3,27.8,-95.2,29,-93.6,29.7,-90.2,29.1,-89.2,30.3,-87.2,30.4,-85.3,29.7,-84,30,-82.8,28.9,-82.7,27.4,-81.8,26.1,-81.1,25.1,-80.4,25.2,-80,26.7,-80.6,28.4,-81.3,30.6,-80.8,32.1,-78.9,33.7,-76.5,34.7,-75.6,35.6,-76,37,-75.9,38,-75,38.8,-74,40.2,-72,41,-70,41.6,-70.6,42.6,-70.2,43.7,-67,44.7,-65.8,43.8,-63.5,44.6,-61,45.3,-60,46,-59.4,47.6,-56,48.8,-55.4,51.5,-58,54,-60,55],
+ [-77.4,7.9,-76.8,8.7,-75.5,10.5,-74.2,11.2,-72,11.8,-71.4,10.8,-70.2,11.6,-68.2,10.6,-66.2,10.6,-63,10.7,-61.8,10.3,-60.8,8.6,-59,8,-57.2,6,-54,5.6,-52,4.8,-51,3.9,-50,1.8,-49,-0.4,-48.4,-1.2,-45,-1.4,-44,-2.5,-41.5,-2.9,-39.5,-3.2,-37.2,-4.8,-35.2,-5.5,-34.8,-7.2,-35,-9,-36.4,-10.5,-38.5,-13,-39,-15.6,-39.2,-17.8,-40.4,-20.2,-41,-22,-42,-22.9,-44.6,-23.3,-46.4,-24,-48.4,-26,-48.7,-28.3,-49.8,-29.4,-51,-31.2,-52.2,-32.6,-53.4,-33.8,-54.9,-34.9,-57.2,-35.6,-56.8,-36.8,-57.6,-38.2,-59.5,-38.7,-62.2,-38.8,-62.4,-40.4,-65,-41,-64.4,-42.4,-65.3,-44.6,-67.5,-46,-65.8,-47.9,-67.8,-49.8,-69.1,-51.5,-68.4,-52.4,-72,-53.8,-74.5,-52.4,-75.3,-48.6,-74.5,-46.4,-73.8,-43.2,-73.6,-40.9,-73.4,-38,-72.6,-35.5,-71.5,-32.5,-71.3,-28.9,-70.5,-25.4,-70.2,-23,-70.3,-18.5,-71.4,-17.6,-73.5,-16.3,-75.2,-15.3,-76.3,-13.6,-77.3,-11.8,-78.6,-9.2,-79.8,-7.1,-81.2,-5.9,-80.9,-4.4,-80.3,-3.4,-79.8,-2.4,-80.9,-1.3,-80.5,0.2,-80,0.9,-78.9,1.6,-77.3,3.5,-77.5,6.2],
+ [-17.5,14.7,-16.8,13.3,-16.6,12.3,-15.2,11.2,-13.8,9.8,-13.2,8.8,-11.5,6.9,-9.4,5.3,-7.5,4.4,-5.2,5.1,-3,5,-0.8,5.5,1.2,6.1,3.4,6.4,4.5,6.3,5.6,4.6,6.5,4.3,8.2,4.5,9.3,3.8,9.8,2.4,9.4,0.2,9.2,-1.4,10.2,-3,11.8,-4.4,12.4,-6,13.2,-8.8,13.6,-10.6,12.6,-13.2,11.8,-16.6,12.8,-19.4,14.4,-22.4,14.6,-25,15.2,-27,16.5,-28.6,17.4,-30.6,18.2,-32,18.4,-34,19.6,-34.8,20.8,-34.4,22.6,-33.9,25.6,-34,27.2,-33.4,28.8,-32.2,30.4,-30.8,31.4,-29.2,32.4,-28.2,32.6,-26.4,32.8,-25.8,35.2,-24.6,35.5,-23.8,35.5,-21.8,34.8,-20,36,-18.8,37.6,-17.4,39.6,-16.2,40.6,-14.6,40.6,-11.2,40.4,-10.4,39.4,-8,39.3,-6.6,38.9,-5.8,39.4,-4.6,40.2,-2.8,41.6,-1.6,42.8,0,44.4,1.8,46.2,3.2,47.8,4.6,49.2,6.4,50.8,9.2,51.3,11.8,49.6,11.4,48,11.2,45.6,10.7,44,10.4,43.3,11.6,42.6,12.6,41.6,13.8,40.2,15.2,39.4,15.8,38.6,17.8,37.4,20,37.2,21.8,36.2,23.2,35.6,24,34.6,26,33.6,27.4,32.8,29.4,32.4,30,32.3,31.2,31.2,31.6,29.9,31.2,28.6,31,25.2,31.6,24,32.2,22,32.9,20.2,32.4,19.8,31.3,19,30.4,17.8,30.8,16,31.2,15.2,32.4,13.2,32.8,11.4,33.4,10.2,33.8,10.8,35.2,11,36.8,10.2,37.2,9.6,37.4,8.4,36.9,6.4,37,4.2,36.8,2,36.6,0,35.8,-1.8,35.2,-2.8,35.2,-5.4,35.9,-6,35.6,-6.8,34.2,-7.6,33.6,-9.6,32.4,-9.8,30.6,-10.2,29.4,-11.4,28.2,-13,27.6,-14.4,26.2,-15,24.6,-16,23.8,-16.8,22.2,-17.1,20.9,-16.4,19.6,-16.2,18.2,-16.4,16.6,-16.6,15.6],
+ [49.3,-12,50.2,-14.4,50.5,-15.6,49.6,-17.4,48.8,-20.4,47.8,-23.8,47,-25,45.2,-25.6,44,-24.8,43.6,-23.4,43.2,-21.8,44.4,-19.8,44,-17.2,44.6,-16.2,46.2,-15.8,47.4,-14.4,48.6,-13.4],
+ [-9.3,43.2,-8.9,41.5,-9.5,38.8,-8.9,37,-7.4,37.2,-6.2,36.4,-5.6,36,-4.4,36.7,-2.1,36.7,-0.8,37.6,0.2,38.8,-0.3,39.5,0.9,41,3.2,41.9,3.1,43.1,4.8,43.4,6.6,43.1,7.6,43.8,8.8,44.4,10.2,43.9,10.5,42.9,12.2,41.7,13.8,41.2,15.7,40,15.6,38.3,16.1,38,16.6,38.9,17.1,39.4,18.5,40.1,17,40.8,16,41.4,14.1,42.5,13.5,43.6,12.3,44.8,12.4,45.4,13.7,45.7,14.4,45.2,15.2,44.2,16.4,43.5,18.1,42.6,19.4,41.8,19.3,40.4,20.2,39.6,21.1,38.3,21.7,36.8,22.8,36.5,23.2,37.9,24,38.2,22.9,39.6,22.8,40.5,24.4,40.9,26,40.8,26.7,40.4,26.2,39.5,26.8,38.3,27.3,37.2,28.3,36.7,30.6,36.8,32.7,36.1,34.6,36.8,36.1,36.7,35.8,35.4,35.9,34.6,35.1,33.1,34.4,31.5,33.2,31.1,32.6,30,34.9,29.5,35.7,27.6,37.2,25,38.8,22.3,39.3,21.2,40.6,19,42,16.5,42.8,14.8,43.3,12.7,45,12.8,48.7,14,51.9,15.4,53.6,16.6,55.4,17.6,56.7,18.3,57.8,19.7,58.9,21.1,59.8,22.5,58.7,23.6,57.1,23.9,56.4,24.9,56.3,26.3,55.5,25.5,54.6,24.3,53.3,24.1,51.6,24.2,51.6,25.2,51.5,26.1,51.1,26,50.8,24.8,50.2,25.7,50.1,26.5,49.5,27.1,48.6,28.1,47.9,29.4,48.4,29.9,49.6,30,50.3,29.2,51.4,27.9,52.7,27.4,54.2,26.7,56.3,27.1,57.3,25.8,59.5,25.4,61.6,25.2,64.6,25.3,66.7,25.4,67.5,24,68.7,23.3,70.1,22.7,69.2,22.3,70.4,20.9,72.6,21.4,72.8,19.1,73.4,16.4,74.4,14,75,12.1,75.8,11,76.3,9.5,77.5,8.1,78.2,8.9,79.3,10.3,79.9,11.9,80.3,13.5,80.1,15.3,81.2,16.2,82.3,16.6,84.1,18.3,85.3,19.6,86.9,20.8,87,21.6,88.2,21.6,89,22,90.5,22.1,91.8,22.4,92.3,20.8,93.2,19.5,94.4,18.2,94.2,16,95.4,15.8,97.2,16.9,97.7,15.6,98.3,13.2,98.6,11.7,98.4,9.6,98.3,8.2,99.4,6.9,100.3,5.4,101.3,3,103.4,1.4,104.2,1.4,103.5,3.7,103.4,4.9,102.2,6.2,100.8,6.9,100.2,8.4,99.3,9.3,99.2,10.9,99.6,12.3,100,13.5,100.9,12.7,102.3,12.2,103.2,10.8,104.8,8.6,105.2,9.2,106.7,10.4,108.9,11.3,109.3,13.6,108.8,15.4,107.4,16.8,105.9,18.6,106.6,20.2,107.9,21.5,109.7,21.5,110.2,20.3,110.8,21.4,113.5,22.2,114.9,22.6,116.5,22.9,118.4,24.3,119.6,25.6,120.3,27,121.4,28.7,121.9,30.8,121.3,31.9,120.5,33,119.3,34.7,120.3,36.1,122.5,36.9,121.4,37.5,119.2,37.2,118,38.2,117.6,38.8,118.6,39.2,121.1,40.9,122.2,40.5,121.2,39.1,122,39.1,123.5,39.8,124.3,39.9,125.3,39.5,124.8,38,126.2,37.4,126.4,35.1,126.5,34.4,127.8,34.7,129.3,35.3,129.5,37.1,128.4,38.6,127.5,39.8,129.7,40.8,129.8,41.5,130.7,42.3,132.3,43.3,135.3,43.8,137.7,45.9,140,48.3,140.5,50.9,141.4,53,141,55,8,55,8.6,53.8,7,53.4,4.7,52.8,3.4,51.4,1.8,51,1.6,50.2,-1.3,49.7,-1.9,48.7,-4.6,48.5,-4.3,47.8,-2.4,47.2,-1.2,46.1,-1.3,44.8,-1.5,43.5,-3.8,43.4,-7.9,43.8],
+ [79.8,9.8,81.2,8.6,81.8,7.4,81.2,6.2,80.1,6,79.7,8],
+ [129.6,33.2,130.2,31.2,131.1,31.3,131.9,32.8,132,33.9,132.9,34.2,133.9,33.4,134.7,33.8,135.3,33.5,135.8,34.7,136.9,34.3,137.4,34.7,138.8,34.6,139.2,35.3,139.8,35,140.9,35.7,140.6,36.9,141,38.3,141.6,38.9,142,39.7,141.4,41.4,140.9,41.1,140,40.4,139.9,39.2,139.4,38.2,138.5,37.3,137.3,36.8,136.8,37.3,136,35.8,135.1,35.6,133,35.5,132.3,35.3,131,34.4,130.9,33.9],
+ [140,41.5,141.1,41.8,143.2,42,145.6,43.3,144.9,44.1,143,44.5,141.7,45.4,141.4,43.3,139.9,42.5],
+ [120.1,23,120.6,24.6,121.5,25.3,121.9,24.8,121.4,23,120.8,22],
+ [108.7,19.2,110.5,20.1,111,19.6,110.2,18.4,109.5,18.2],
+ [120,18.5,122.3,18.5,122.1,16.8,121.6,15.8,122.2,14.2,124.1,13.9,124,12.6,123.2,13,122.4,13.8,121.4,13.6,120.6,14.3,120.1,15.8],
+ [122,7,123.2,8.4,124.2,8.3,125.5,9.6,126.6,7.3,126.2,6.3,125.4,5.6,124.2,6.3,123.5,7.6,122.2,6.9],
+ [122,11.8,123.4,12.5,125.2,12.5,125.7,10.1,124.6,10.2,123.4,9.3,122.4,10.5],
+ [117.2,8.4,119.8,10.8,119.6,11.4,117.4,9.2],
+ [109,1.5,109.6,-1,110.2,-2.9,112,-3.4,114.5,-4,116.5,-3.5,116.3,-1.8,117.6,0.8,118.8,1.2,117.9,4.1,119.3,5.2,117,7,115.4,5.2,113,3.2,111.4,2.4,109.6,2],
+ [95.3,5.6,97.5,5.2,98.7,3.7,100.3,2.3,101.6,1.5,103.7,-1,104.6,-2.3,106,-3.2,105.8,-5.9,104.5,-5.9,102.3,-4.2,100.9,-2.4,99.6,-1.1,98.7,1.7,97.4,2.9,95.9,4.5],
+ [105.2,-6.8,106,-5.9,108.5,-6.4,111,-6.4,112.6,-6.9,114.5,-7.7,114.4,-8.7,111,-8.2,108,-7.8,106.5,-7.4],
+ [119.3,-5.6,119.6,-3.5,118.8,-2.7,119.8,0.4,120.8,1.3,124.8,1.5,122.2,0.6,120.5,0.4,121.4,-1,123.4,-0.8,121.2,-1.9,122.2,-4.5,121,-4.8,120.4,-3,120.4,-5.6],
+ [131,-1,134,-0.9,135,-3.3,137.5,-1.5,141,-2.6,144,-3.8,145.8,-4.9,147.5,-6,148.5,-8.6,150.6,-10.5,149,-10.3,147,-10,144.2,-7.7,142.6,-9.3,141,-9.1,138.8,-8.3,137.8,-5.3,135,-4.4,132.9,-4.1,132,-2.8],
+ [124,-10.2,125.2,-9.2,127.3,-8.4,126,-9],
+ [113.4,-22,114.1,-21.8,116.8,-20.5,121,-19.5,122.2,-17,125.2,-14.5,128,-15,129.8,-14.8,130.2,-12.5,132.6,-11.5,136.7,-12.2,135.9,-15,140.8,-17.5,141.6,-12.6,142.5,-10.7,143.5,-14,145.3,-15,146.3,-19,149.2,-21.5,153,-25.2,153.6,-28.5,152.9,-31.5,150.8,-34.5,150,-37.5,146.3,-39.1,144,-38.2,140.6,-38,137.8,-35.6,136,-35,135.2,-34.5,134,-32.8,131,-31.5,126,-32.3,123.5,-33.9,119.8,-34,117.8,-35.1,115,-34.3,115.7,-31.5,114.9,-29,113.5,-26.6,113.8,-24.5],
+ [144.6,-40.7,148.3,-40.9,148,-43,146.8,-43.6,145.2,-42.2],
+ [172.7,-34.4,174.8,-36.8,178.5,-37.7,177.9,-39.3,176.8,-40,174.9,-41.4,174.6,-39.8,173.8,-39.2,174.6,-37.5],
+ [172.7,-40.5,174.3,-41.7,173.2,-43,171.3,-44.5,169.3,-46.6,166.5,-46,168.2,-44,171.3,-41.8],
+ [-85,21.8,-82,23.1,-79,22.4,-77,21.3,-74.2,20.2,-77.5,19.9,-78.6,21.5,-81.4,22.1,-83.4,21.8,-84.9,21.9],
+ [-74.4,18.5,-72.8,19.9,-70,19.7,-68.4,18.6,-70,18.2,-71.4,17.6,-74.3,18.3],
+ [12.4,38.1,15.6,38.3,15.1,36.7,12.5,37.6],[8.4,41,9.8,41,9.6,39.1,8.4,39],[8.6,42.9,9.5,42.9,9.3,41.4,8.8,41.6],[23.5,35.6,26.3,35.3,26,35,23.6,35.2],[32.3,35.1,34.6,35.7,34,34.6,32.5,34.7]
+];
+const WATER_ON_LAND=[
+ [27.5,42.4,28.6,44,30.2,45.8,31.8,46.6,33.5,44.5,35.5,45,37.5,45.5,38.3,44.4,40,43.4,41.6,41.6,39.6,41,37,41.2,35.2,42,33.3,42,31.3,41.2,29.1,41.2],
+ [46.8,44.6,47.5,45.8,49.2,46.5,51.2,47,53,45,51.3,44.4,51.2,43.1,52.7,42.3,53,40.8,54,39.4,53.8,37.3,52.3,36.7,50.3,37.2,49,38.2,49.4,40.2,48.6,41.8,47.6,43]
+];
+const MX=lon=>((lon+20+720)%360)*1000/360;
+const MY=lat=>(44-lat)*3.2+4;
+const poly=arr=>{let d="";for(let i=0;i<arr.length;i+=2)d+=(i?"L":"M")+f1(MX(arr[i]))+","+f1(MY(arr[i+1]));return d+"Z";};
+const LAND_D=LAND.map(poly).join(" ");
+const WATER_D=WATER_ON_LAND.map(poly).join(" ");
+const SITES=[
+ {n:"Yucatán, Mexico",lat:21.4,lon:-86.8,dx:12,dy:-10,src:"parra"},
+ {n:"Darwin Is., Galápagos",lat:1.7,lon:-92,dx:-12,dy:16,anchor:"end",src:"acuna"},
+ {n:"Ningaloo, Australia",lat:-22.6,lon:113.7,dx:-12,dy:4,anchor:"end",src:"norman"},
+ {n:"Donsol, Philippines",lat:12.9,lon:123.6,dx:-10,dy:-10,anchor:"end",src:"mccoy"},
+ {n:"South Ari Atoll, Maldives",lat:3.5,lon:72.8,dx:12,dy:4,src:"perry"},
+ {n:"Seychelles",lat:-4.6,lon:55.5,dx:12,dy:10,src:"rowat11"},
+ {n:"Tofo, Mozambique",lat:-23.9,lon:35.5,dx:12,dy:14,src:"rohner"},
+ {n:"Djibouti",lat:11.6,lon:43.1,dx:-10,dy:-10,anchor:"end",src:"rowat11"}
+];
+const SITE_SRC=["parra","acuna","norman","mccoy","perry","rowat11","rohner"];
+const COIBA=[MX(-81.7),MY(7.4)], MARIANA=[MX(146),MY(20.5)];
+function FieldMap(){
+  const eq=MY(0), tc=MY(23.44), tcap=MY(-23.44);
+  return html`<svg className="map-svg" viewBox="0 0 1000 290" role="img" aria-labelledby="map-t map-d">
+    <title id="map-t">Field-journal map of whale-shark sites</title>
+    <desc id="map-d">A hand-drawn world map centred on the Indian and Pacific Oceans. Coral dots mark eight documented coastal aggregation sites: Yucatán in Mexico, Darwin Island in the Galápagos, Ningaloo in Australia, Donsol in the Philippines, the Maldives, the Seychelles, Mozambique and Djibouti. A dashed line, drawn schematically, links a tagging site off Panama to the Mariana Trench region, representing one shark's roughly 20,000 km journey. A note in the ocean marks pupping grounds as largely unknown.</desc>
+    <defs>
+      <clipPath id="map-clip"><rect x="0" y="0" width="1000" height="290"/></clipPath>
+      <pattern id="map-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="6" stroke="#8a7a5a" strokeWidth=".6" opacity=".35"/></pattern>
+    </defs>
+    <rect width="1000" height="290" fill="#cfe1d8" opacity=".55"/>
+    <g clipPath="url(#map-clip)">
+      <g stroke="#5a7d78" strokeWidth=".6" opacity=".5" fill="none">
+        ${[-40,-20,0,20,40].map(l=>html`<line key=${"la"+l} x1="0" y1=${MY(l)} x2="1000" y2=${MY(l)} strokeDasharray=${l===0?"":"2 5"}/>`)}
+        ${[0,30,60,90,120,150,180,210,240,270,300].map(l=>html`<line key=${"lo"+l} x1=${l*1000/360+ (20*1000/360)%(1000/12)} y1="0" x2=${l*1000/360+(20*1000/360)%(1000/12)} y2="290" strokeDasharray="2 5"/>`)}
+      </g>
+      <line x1="0" y1=${tc} x2="1000" y2=${tc} stroke="#a3452f" strokeWidth=".7" strokeDasharray="6 5" opacity=".45"/>
+      <line x1="0" y1=${tcap} x2="1000" y2=${tcap} stroke="#a3452f" strokeWidth=".7" strokeDasharray="6 5" opacity=".45"/>
+      <path d=${LAND_D} fill="#e8dcbf" filter="url(#m-wash)" opacity=".9"/>
+      <path d=${LAND_D} fill="url(#map-hatch)"/>
+      <path d=${LAND_D} fill="none" stroke="#4d4839" strokeWidth=".9" strokeLinejoin="round" filter="url(#m-rough)"/>
+      <path d=${WATER_D} fill="#d6e6de" stroke="#4d4839" strokeWidth=".8" filter="url(#m-rough)"/>
+    </g>
+    <g fontFamily="DM Mono, monospace" fontSize="8.5" fill="#6a6558" letterSpacing=".5">
+      <text x="6" y=${eq-3}>EQUATOR</text><text x="6" y=${tc-3}>TROPIC OF CANCER</text><text x="6" y=${tcap-3}>TROPIC OF CAPRICORN</text>
+    </g>
+    <g fontFamily="IM Fell English, Georgia, serif" fontStyle="italic" fontSize="15" fill="#4f7470" opacity=".85">
+      <text x="560" y="250">Pacific Ocean</text><text x="215" y="262">Indian Ocean</text><text x="905" y="190">Atlantic</text>
+    </g>
+    <path d=${"M"+f1(COIBA[0])+","+f1(COIBA[1])+" C700,178 560,168 "+f1(MARIANA[0]+4)+","+f1(MARIANA[1]+6)} fill="none" stroke="#a3452f" strokeWidth="1.8" strokeDasharray="6 5" strokeLinecap="round"/>
+    <path d=${"M"+f1(MARIANA[0]+4)+","+f1(MARIANA[1]+6)+" l10,-1 M"+f1(MARIANA[0]+4)+","+f1(MARIANA[1]+6)+" l7,7"} stroke="#a3452f" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+    <g fill="none" stroke="#26282a" strokeWidth="1.4">
+      <path d=${"M"+f1(COIBA[0])+","+f1(COIBA[1]-5)+" l5,5 l-5,5 l-5,-5 Z"} fill="#f2eadb"/>
+      <path d=${"M"+f1(MARIANA[0])+","+f1(MARIANA[1]-5)+" l5,5 l-5,5 l-5,-5 Z"} fill="#f2eadb"/>
+    </g>
+    <g fontFamily="DM Mono, monospace" fontSize="9.5" fill="#26282a">
+      <text x=${COIBA[0]+9} y=${COIBA[1]+14}>Coiba, Panama (tagged)</text>
+      <text x=${MARIANA[0]-4} y=${MARIANA[1]-10} textAnchor="middle">Mariana Trench region</text>
+    </g>
+    <text x="600" y="196" fontFamily="Caveat, cursive" fontSize="19" fill="#a3452f" textAnchor="middle">one shark, ~20,000 km</text>
+    ${SITES.map(s=>{const x=MX(s.lon),y=MY(s.lat);return html`<g key=${s.n}>
+      <circle cx=${f1(x)} cy=${f1(y)} r="5.2" fill="#d2705a" stroke="#26282a" strokeWidth="1.2"/>
+      <text x=${f1(x+s.dx)} y=${f1(y+s.dy)} textAnchor=${s.anchor||"start"} fontFamily="DM Mono, monospace" fontSize="9.5" fill="#26282a">${s.n}</text>
+    </g>`;})}
+    <g transform="translate(560 44)">
+      <text fontFamily="Caveat, cursive" fontSize="21" fill="#285c63">Where are pups born?</text>
+      <text y="18" fontFamily="Caveat, cursive" fontSize="17" fill="#285c63">largely unknown</text>
+    </g>
+  </svg>`;
+}
+
+function SceneProtect({reduced,onCite,onAsk}){
+  return html`<section className="scene s5" aria-labelledby="s5-title">
+    <div className="bg deepbg"></div>
+    <${Particles} reduced=${reduced} density=${40} seed=${17}/>
+    <div className="scene-inner">
+      <article className="page on-paper">
+        <header className="page-head">
+          <div><p className="kicker">Chapter 4 · The evidence</p><h2 id="s5-title" tabIndex="-1">Science, mystery and protection</h2></div>
+          <span className="folio">What is known, what is not, what helps</span>
+        </header>
+        <div className="grid-map">
+          <figure style=${{margin:0}}>
+            <div className="map-scroll"><${FieldMap}/></div>
+            <figcaption className="map-key">
+              <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="#d2705a" stroke="#26282a"/></svg>Documented aggregation site <${Cite} ids=${SITE_SRC} onCite=${onCite}/></span>
+              <span><svg width="26" height="10" aria-hidden="true"><line x1="1" y1="5" x2="25" y2="5" stroke="#a3452f" strokeWidth="1.8" strokeDasharray="5 4"/></svg>Documented start and end, route drawn schematically <${Cite} ids=${["guzman"]} onCite=${onCite}/></span>
+              <span><${Tag} kind="illus">Coastlines simplified by hand<//></span>
+            </figcaption>
+          </figure>
+          <div>
+            <div className="ask-cta">
+              <button type="button" className="btn btn-primary" onClick=${onAsk}>Ask the Field Journal</button>
+              <span className="hand" style=${{fontSize:"20px",color:"var(--teal-ink)"}}>questions answered from cited notes</span>
+            </div>
+            <ul className="facts facts-grid">
+              <li><${Tag} kind="doc">Documented<//><h3>Ocean-crossing journeys</h3><p>A 7 m female tagged off Coiba Island, Panama, was tracked for 841 days over about 20,142 km, ending near the Mariana Trench. <${Cite} ids=${["guzman"]} onCite=${onCite}/></p></li>
+              <li><${Tag} kind="open">Open question<//><h3>Where are pups born?</h3><p>Much about newborn and adult whale sharks is still unknown. At Darwin Island, Galápagos, over 90% of sharks recorded were adult females, almost all possibly pregnant, yet where they give birth has not been found. <${Cite} ids=${["rowat","acuna"]} onCite=${onCite}/></p></li>
+              <li><${Tag} kind="assess">Assessed<//><h3>Endangered</h3><p>Classed as Endangered by the IUCN Red List in 2016, which estimated the global population had more than halved over about 75 years. IUCN published an updated assessment in 2025. <${Cite} ids=${["iucn","iucn25"]} onCite=${onCite}/></p></li>
+              <li><${Tag} kind="doc">Documented<//><h3>Nets and ships</h3><p>Fishing and ship strikes are the main threats. Satellite tracking found that 92% of the sharks’ horizontal space use overlapped with large-vessel traffic, and fatal strikes may go largely undetected. <${Cite} ids=${["iucn","womersley"]} onCite=${onCite}/></p></li>
+            </ul>
+          </div>
+        </div>
+        <section className="help" aria-labelledby="help-t">
+          <div className="help-head"><h3 id="help-t">Three ways to help</h3><span className="folio">Credible, practical actions</span></div>
+          <ul className="actions">
+            <li><b>Swim with care</b><p>Choose operators that follow local rules. At Ningaloo, swimmers stay at least 3 m from the head and body and 4 m from the tail, and never touch or use flash. <${Cite} ids=${["code"]} onCite=${onCite}/></p></li>
+            <li><b>Share your photos</b><p>Upload encounter photos, especially the left side behind the gills, to the Sharkbook photo-ID library so researchers can follow individuals. <${Cite} ids=${["sharkbook"]} onCite=${onCite}/></p></li>
+            <li><b>Back protections that work</b><p>Support science-based measures that reduce ship strikes and bycatch in the places whale sharks gather. <${Cite} ids=${["womersley","iucn"]} onCite=${onCite}/></p></li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </section>`;
+}
+
+/* =========================================================
+   SCENE 6 — The collection expands
+   ========================================================= */
+const EMBLEMS={
+ manta:html`<g><path d="M50,30 C44,30 40,34 38,38 C28,40 14,46 6,56 C18,56 30,58 40,62 C44,66 47,70 50,72 C53,70 56,66 60,62 C70,58 82,56 94,56 C86,46 72,40 62,38 C60,34 56,30 50,30 Z"/><path d="M44,31 C41,26 42,22 45,19 M56,31 C59,26 58,22 55,19 M50,72 C50,80 51,88 54,96 M50,38 L50,64"/></g>`,
+ octopus:html`<g><path d="M50,12 C39,12 33,21 34,31 C35,39 40,44 43,47 L57,47 C60,44 65,39 66,31 C67,21 61,12 50,12 Z"/><circle cx="44" cy="39" r="1.6" fill="currentColor"/><circle cx="56" cy="39" r="1.6" fill="currentColor"/><path d="M43,47 C36,56 26,58 22,68 C19,76 26,80 29,74 M46,48 C42,60 36,70 38,80 C40,88 47,86 44,80 M50,48 C50,62 48,74 52,86 C55,93 60,88 56,84 M54,48 C58,60 64,68 62,78 C60,86 67,88 69,82 M57,47 C64,55 74,58 78,66 C82,74 75,79 72,73 M41,45 C32,48 22,46 16,52 C11,57 16,63 20,58"/></g>`,
+ turtle:html`<g><path d="M50,28 C62,28 70,40 70,54 C70,68 61,78 50,78 C39,78 30,68 30,54 C30,40 38,28 50,28 Z"/><path d="M47,28 C45,22 46,15 50,13 C54,15 55,22 53,28"/><path d="M34,40 C24,33 14,33 7,38 C15,43 25,46 32,48 M66,40 C76,33 86,33 93,38 C85,43 75,46 68,48 M34,69 C29,76 23,80 18,81 C21,74 27,69 32,65 M66,69 C71,76 77,80 82,81 C79,74 73,69 68,65 M50,78 L50,85"/><path d="M50,34 L44,42 L44,52 L50,58 L56,52 L56,42 Z M44,42 L36,44 M56,42 L64,44 M44,52 L35,58 M56,52 L65,58 M50,58 L50,72" strokeWidth="1.1"/></g>`,
+ whale:html`<g><path d="M8,50 C12,42 24,38 40,38 C58,38 74,42 84,46 C88,47 92,46 96,41 C95,48 92,52 88,53 C92,55 95,58 96,63 C91,58 87,56 83,56 C72,60 54,64 38,62 C22,60 10,56 8,50 Z"/><path d="M32,58 C36,68 42,77 52,82 C48,73 44,65 41,60"/><path d="M13,54 C24,58 34,60 44,60 M17,57 C26,60 34,61 40,61" strokeWidth="1.1"/><circle cx="19" cy="49" r="1.4" fill="currentColor"/><path d="M62,40 C64,37 66,36 69,37"/></g>`,
+ nudibranch:html`<g><path d="M12,66 C18,57 34,53 50,53 C66,53 80,57 90,64 C84,69 70,71 50,71 C31,71 19,71 12,66 Z"/><path d="M24,56 C22,48 22,42 25,37 M31,55 C30,47 31,42 34,37"/><path d="M68,54 C66,46 69,40 72,37 M73,55 C73,47 77,43 81,41 M77,56 C80,49 85,47 90,47"/><circle cx="42" cy="61" r="2"/><circle cx="52" cy="60" r="2"/><circle cx="61" cy="62" r="2"/><circle cx="47" cy="66" r="1.4"/><circle cx="57" cy="66" r="1.4"/></g>`,
+ deep:html`<g><path d="M20,56 C20,40 34,30 52,32 C68,34 78,44 80,54 L94,44 C92,54 92,60 94,68 L80,60 C76,70 64,76 50,76 C36,76 26,70 22,62 Z"/><path d="M21,57 L28,58 L24,61 L31,62 L26,65 L33,66"/><path d="M38,33 C36,22 28,15 19,17"/><circle cx="17" cy="18" r="3.4" fill="currentColor" opacity=".9"/><circle cx="17" cy="18" r="7" opacity=".4"/><circle cx="40" cy="46" r="2.4"/></g>`
+};
+const FUTURE=[
+ {id:"manta",vol:"II",name:"Manta Rays",cover:"#1d4760",focus:"wings, cleaning stations and identification from belly patterns"},
+ {id:"octopus",vol:"III",name:"Octopuses",cover:"#6e3a2e",focus:"camouflage, problem-solving and den life"},
+ {id:"turtle",vol:"IV",name:"Sea Turtles",cover:"#44573a",focus:"navigation, nesting beaches and long journeys"},
+ {id:"whale",vol:"V",name:"Whales",cover:"#2a3a4a",focus:"song, migration and deep dives"},
+ {id:"nudibranch",vol:"VI",name:"Nudibranchs",cover:"#8c4f3c",focus:"color, chemistry and tiny reef worlds"},
+ {id:"deep",vol:"VII",name:"The Deep Sea",cover:"#161f29",focus:"bioluminescence and life under pressure"}
+];
+function SceneCollection({reduced,sel,setSel,onConcept,onSources,onNext,gh,setGh}){
+  const f=FUTURE.find(v=>v.id===sel);
+  return html`<section className="scene s6 dark" aria-labelledby="s6-title">
+    <${UnderwaterBg} variant="deep"/>
+    <${Particles} reduced=${reduced} density=${60} seed=${21}/>
+    <div className="scene-inner">
+      <header>
+        <p className="kicker">Field Notes From the Blue · The collection</p>
+        <h2 id="s6-title" className="display" tabIndex="-1">The collection expands</h2>
+        <p className="lede">Volume I is open. Six more expeditions are planned: each will be researched, illustrated and cited before it is published.</p>
+      </header>
+      <div className="shelf" role="group" aria-label="Volumes in the collection">
+        <div className="vol1">
+          <div className="journal" aria-label="Volume I: Whale Sharks, now open" role="img"><${JournalCover}/></div>
+          <span className="open-mark">Vol. I · Now open</span>
+        </div>
+        ${FUTURE.map((v,i)=>html`<button key=${v.id} type="button" className="fvol" style=${{animationDelay:(.35+i*.08)+"s"}} aria-pressed=${sel===v.id} aria-label=${"Volume "+v.vol+": "+v.name+". Future expedition, not yet made."} onClick=${()=>setSel(sel===v.id?null:v.id)}>
+          <div className="jc" style=${{"--cover":v.cover}}>
+            <div className="fv-inner">
+              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">${EMBLEMS[v.id]}</svg>
+              <div className="fv-text"><span className="fv-vol">Vol. ${v.vol}</span><span className="fv-name">${v.name}</span></div>
+            </div>
+            <span className="stamp">Future expedition</span>
+          </div>
+        </button>`)}
+      </div>
+      <p className="vol-note" aria-live="polite">${f?html`<strong>Volume ${f.vol} · ${f.name}.</strong> A future expedition, not yet researched or illustrated. Proposed focus: ${f.focus}. Every fact will be sourced before publication.`:"Select a future volume to see what its expedition might explore."}</p>
+      <p className="finale">The ocean contains more stories than one lifetime can tell. Let’s begin with a gentle giant.</p>
+      <div className="ctas">
+        <button type="button" className="btn btn-primary" onClick=${onConcept}>Explore the concept</button>
+        <button type="button" className="btn" onClick=${onSources}>View the scientific sources</button>
+        <button type="button" className="btn btn-explore" onClick=${onNext}>Imagine the next volume</button>
+        <button type="button" className="btn" aria-expanded=${gh} aria-controls="gh-note" onClick=${()=>setGh(g=>!g)}>Visit the future GitHub project</button>
+      </div>
+      ${gh&&html`<p id="gh-note" className="gh-note fade-in" role="status">The public repository isn’t published yet. This button will link to it once it exists.</p>`}
+    </div>
+  </section>`;
+}
+
+/* =========================================================
+   Drawers
+   ========================================================= */
+function useDialog(onClose){
+  const ref=useRef(null);
+  useEffect(()=>{
+    const prev=document.activeElement; const el=ref.current;
+    const first=el&&el.querySelector("button, [href], input");
+    first&&first.focus();
+    const onKey=e=>{
+      if(e.key==="Escape"){e.stopPropagation();onClose();}
+      if(e.key==="Tab"&&el){const f=[...el.querySelectorAll("button, [href], input")].filter(x=>!x.disabled);if(!f.length)return;const a=f[0],b=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus();}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus();}}
+    };
+    document.addEventListener("keydown",onKey,true);
+    return ()=>{document.removeEventListener("keydown",onKey,true);prev&&prev.focus&&prev.focus();};
+  },[]);
+  return ref;
+}
+function Drawer({title,kicker,onClose,children,id}){
+  const ref=useDialog(onClose);
+  return html`<${Fragment}>
+    <div className="scrim" onClick=${onClose}></div>
+    <div className="drawer" role="dialog" aria-modal="true" aria-labelledby=${id+"-t"} ref=${ref}>
+      <div className="drawer-head">
+        <div><p className="kicker">${kicker}</p><h2 id=${id+"-t"}>${title}</h2></div>
+        <button type="button" className="btn" onClick=${onClose} aria-label="Close panel">Close</button>
+      </div>
+      ${children}
+    </div>
+  <//>`;
+}
+function SourcesPanel({focus,onClose}){
+  useEffect(()=>{if(!focus)return;const el=document.getElementById("src-"+focus);el&&el.scrollIntoView({block:"center"});},[focus]);
+  return html`<${Drawer} id="src" kicker="Researched, then independently checked" title="Scientific sources" onClose=${onClose}>
+    <p>Every factual statement in this volume links to one of these works. Illustrations and animation are artistic and are labeled as such.</p>
+    <ol className="srcs">
+      ${SOURCE_ORDER.map(k=>{const s=SOURCES[k];return html`<li key=${k} id=${"src-"+k} className=${focus===k?"hl":""}>
+        <p className="src-title">${s.title}</p>
+        <p className="src-meta">${s.authors} (${s.year}). ${s.pub}.</p>
+        <a className="src-link" href=${s.link} target="_blank" rel="noopener noreferrer">${s.linkText}</a>
+        <p className="src-used">Used in: ${s.used}</p>
+      </li>`;})}
+    </ol>
+  <//>`;
+}
+function AskPanel({onClose,onCite,state,setState}){
+  const ask=(text,fromChip)=>{const hit=retrieve(text);setState({q:text,hit,chip:fromChip||null,input:state.input});};
+  const byId=id=>KB.find(e=>e.id===id);
+  return html`<${Drawer} id="ask" kicker="Prototype · local research assistant" title="Ask the Field Journal" onClose=${onClose}>
+    <p>This is not a live AI model. It matches your question against ${KB.length} verified notes stored in this page, answers only from them, and cites the source. If no note fits, it says so. No data leaves your device.</p>
+    <div className="chips" role="group" aria-label="Suggested questions">
+      ${FEATURED_Q.map(id=>{const e=byId(id);return html`<button key=${id} type="button" className="chip" aria-pressed=${state.chip===id} onClick=${()=>ask(e.q,id)}>${e.q}</button>`;})}
+      <button type="button" className="chip test" aria-pressed=${state.chip==="sleep"} onClick=${()=>ask("Do whale sharks sleep?","sleep")}>Do whale sharks sleep?</button>
+    </div>
+    <form className="askform" onSubmit=${e=>{e.preventDefault();if(state.input.trim())ask(state.input.trim());}}>
+      <label htmlFor="ask-input">Ask your own question</label>
+      <input id="ask-input" type="text" autoComplete="off" placeholder="Ask your own question" value=${state.input} onInput=${e=>setState(s=>({...s,input:e.target.value}))}/>
+      <button type="submit" className="btn btn-primary">Ask</button>
+    </form>
+    <div aria-live="polite">
+      ${state.q&&(state.hit?html`<article className="answer">
+        <p className="q">${state.q}</p>
+        <p className="a">${state.hit.entry.a}</p>
+        <p style=${{margin:"0 0 6px"}}>Sources: <${Cite} ids=${state.hit.entry.src} onCite=${onCite}/></p>
+        <p className="meta">Retrieved note: “${state.hit.entry.q}” · matched on: ${state.hit.hits.join(", ")}</p>
+      </article>`:html`<article className="answer none">
+        <p className="q">${state.q}</p>
+        <p className="a">The field journal has no verified note that answers this yet, so it won’t guess.</p>
+        <p className="meta">Try a suggested question, or browse the sources. Other topics it can answer: size, age, eyes, reproduction, status, identification.</p>
+      </article>`)}
+    </div>
+    <p className="small-print" style=${{marginTop:"18px"}}>How it works: your question is split into keywords, compared with each note’s keyword list, and the best-matching note is returned only if the match is strong enough. A future version could use a small language model restricted to these same cited notes.</p>
+  <//>`;
+}
+function ConceptPanel({onClose,onSources}){
+  return html`<${Drawer} id="concept" kicker="Field Notes From the Blue" title="The concept" onClose=${onClose}>
+    <p>An expandable collection of short, interactive documentaries about sea animals. Each volume follows the same six chapters:</p>
+    <ol className="concept-list">
+      <li><b>The journal opens</b> above the water.</li>
+      <li><b>The encounter</b>: a full-scale illustrated portrait with scale references.</li>
+      <li><b>The plate</b>: interactive anatomy and one behaviour, modelled.</li>
+      <li><b>Field science</b>: a hands-on version of a real research method.</li>
+      <li><b>The evidence</b>: a map, what is known, what is not, and how to help.</li>
+      <li><b>The collection</b>: what comes next.</li>
+    </ol>
+    <p><b>Principles.</b> Original watercolor-and-ink artwork drawn in code. Every fact cited; every illustration labeled. Keyboard, screen-reader, touch and reduced-motion support from the start. No accounts, keys, trackers or paid services.</p>
+    <p><b>Built to grow.</b> This prototype is a single self-contained React page. It is designed to become a GitHub Pages site with one folder per volume and a shared library of cited notes for Ask the Field Journal.</p>
+    <div style=${{display:"flex",gap:"8px",flexWrap:"wrap",marginTop:"14px"}}><button type="button" className="btn btn-primary" onClick=${onSources}>View the scientific sources</button></div>
+  <//>`;
+}
+
+/* =========================================================
+   App
+   ========================================================= */
+const SCENES=[
+ {short:"Journal",title:"Open the field journal"},
+ {short:"Gentle giant",title:"Meet a gentle giant"},
+ {short:"Anatomy",title:"Anatomy and filter feeding"},
+ {short:"Constellation",title:"A living constellation"},
+ {short:"Evidence",title:"Science, mystery and protection"},
+ {short:"Collection",title:"The collection expands"}
+];
+function usePrefersReduced(){
+  const get=()=>{try{return window.matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){return false;}};
+  const [r,setR]=useState(get);
+  useEffect(()=>{let m;try{m=window.matchMedia("(prefers-reduced-motion: reduce)");}catch(e){return;}const f=()=>setR(m.matches);m.addEventListener?m.addEventListener("change",f):m.addListener(f);return()=>{m.removeEventListener?m.removeEventListener("change",f):m.removeListener(f);};},[]);
+  return r;
+}
+function App(){
+  const sys=usePrefersReduced();
+  const [motionPref,setMotionPref]=useState(null);
+  const reduced=motionPref===null?sys:motionPref==="off";
+  const [scene,setScene]=useState(0);
+  const [dir,setDir]=useState(1);
+  const [opening,setOpening]=useState(false);
+  const [dive,setDive]=useState(false);
+  const [drawer,setDrawer]=useState(null);
+  const [srcFocus,setSrcFocus]=useState(null);
+  const [scaleOn,setScaleOn]=useState(false);
+  const [hot,setHot]=useState("spots");
+  const [choice,setChoice]=useState(null);
+  const [tri,setTri]=useState(false);
+  const [sel,setSel]=useState(null);
+  const [gh,setGh]=useState(false);
+  const [ask,setAsk]=useState({q:"",hit:null,chip:null,input:""});
+  const [announce,setAnnounce]=useState("");
+  const timers=useRef([]);
+  const busy=useRef(false);
+
+  const goTo=useCallback((n)=>{
+    if(n<0||n>5||busy.current) return;
+    setScene(cur=>{
+      if(n===cur) return cur;
+      setDir(n>cur?1:-1);
+      if(cur===0&&n===1&&!reduced){
+        busy.current=true; setOpening(true);
+        timers.current.push(setTimeout(()=>setDive(true),650));
+        timers.current.push(setTimeout(()=>{setScene(1);setOpening(false);},1250));
+        timers.current.push(setTimeout(()=>{setDive(false);busy.current=false;},2000));
+        return cur;
+      }
+      return n;
+    });
+  },[reduced]);
+  useEffect(()=>()=>timers.current.forEach(clearTimeout),[]);
+  useEffect(()=>{
+    setAnnounce("Chapter "+(scene+1)+" of 6: "+SCENES[scene].title);
+    const t=setTimeout(()=>{const h=document.querySelector(".scene h2[tabindex='-1'], .scene h1");if(h&&scene>0)h.focus({preventScroll:true});},60);
+    return ()=>clearTimeout(t);
+  },[scene]);
+  useEffect(()=>{
+    const onKey=e=>{
+      if(drawer) return;
+      const tag=(e.target&&e.target.tagName)||"";
+      if(/INPUT|TEXTAREA|SELECT/.test(tag)||e.altKey||e.ctrlKey||e.metaKey) return;
+      if(e.key==="ArrowRight"||e.key==="PageDown"){e.preventDefault();goTo(scene+1);}
+      if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();goTo(scene-1);}
+    };
+    window.addEventListener("keydown",onKey); return ()=>window.removeEventListener("keydown",onKey);
+  },[scene,drawer,goTo]);
+
+  const onCite=useCallback(id=>{setSrcFocus(id);setDrawer("sources");},[]);
+  const nextVolume=()=>{const i=FUTURE.findIndex(v=>v.id===sel);setSel(FUTURE[(i+1)%FUTURE.length].id);};
+  const explore=()=>{
+    switch(scene){
+      case 0: goTo(1); break;
+      case 1: setScaleOn(s=>!s); break;
+      case 2: {const i=HOTSPOTS.findIndex(h=>h.id===hot);setHot(HOTSPOTS[(i+1)%HOTSPOTS.length].id);break;}
+      case 3: if(choice&&CANDS.find(c=>c.id===choice).right){setTri(t=>!t);}else{const el=document.getElementById("cand-A");el&&el.focus();el&&el.scrollIntoView({block:"center",behavior:reduced?"auto":"smooth"});} break;
+      case 4: setDrawer("ask"); break;
+      case 5: nextVolume(); break;
+    }
+  };
+  const solved=choice&&CANDS.find(c=>c.id===choice).right;
+  const exploreLabel=[
+    "Open the journal",
+    scaleOn?"Hide scale":"Compare scale",
+    "Next hotspot",
+    solved?(tri?"Hide triangles":"Show triangles"):"Try the match",
+    "Ask the Field Journal",
+    "Imagine the next volume"
+  ][scene];
+  const exploreShort=["Open","Scale","Next hotspot",solved?"Triangles":"Try match","Ask","Next volume"][scene];
+
+  let body=null;
+  const cls="k"+scene;
+  if(scene===0) body=html`<${SceneJournal} key=${cls} reduced=${reduced} opening=${opening} onOpen=${()=>goTo(1)}/>`;
+  if(scene===1) body=html`<${SceneGiant} key=${cls} reduced=${reduced} scaleOn=${scaleOn} onScale=${()=>setScaleOn(s=>!s)} onCite=${onCite}/>`;
+  if(scene===2) body=html`<${SceneAnatomy} key=${cls} reduced=${reduced} hot=${hot} setHot=${setHot} onCite=${onCite}/>`;
+  if(scene===3) body=html`<${SceneConstellation} key=${cls} reduced=${reduced} choice=${choice} setChoice=${c=>{setChoice(c);if(c&&CANDS.find(x=>x.id===c).right)setTri(true);}} tri=${tri} setTri=${setTri} onCite=${onCite}/>`;
+  if(scene===4) body=html`<${SceneProtect} key=${cls} reduced=${reduced} onCite=${onCite} onAsk=${()=>setDrawer("ask")}/>`;
+  if(scene===5) body=html`<${SceneCollection} key=${cls} reduced=${reduced} sel=${sel} setSel=${setSel} gh=${gh} setGh=${setGh} onConcept=${()=>setDrawer("concept")} onSources=${()=>{setSrcFocus(null);setDrawer("sources");}} onNext=${nextVolume}/>`;
+
+  return html`<div className=${"app"+(reduced?" rm":"")+(scene===0?" chrome-light":"")+(dir<0?" going-back":"")}>
+    <${SharedDefs}/>
+    <header className="topbar">
+      <div className="wordmark"><b>Field Notes From the Blue</b><small>Vol. I · Whale Sharks</small></div>
+      <div className="tools">
+        <button type="button" className="btn" onClick=${()=>setDrawer("ask")}><span className="lbl-long">Ask the Field Journal</span><span className="lbl-short">Ask</span></button>
+        <button type="button" className="btn" onClick=${()=>{setSrcFocus(null);setDrawer("sources");}}>Sources</button>
+        <button type="button" className="btn" aria-pressed=${reduced} onClick=${()=>setMotionPref(reduced?"on":"off")} title="Turn animation on or off">
+          <span className="lbl-long">${reduced?"Motion off":"Motion on"}</span><span className="lbl-short">${reduced?"Still":"Motion"}</span>
+        </button>
+      </div>
+    </header>
+    <main className="stage" aria-label="Documentary">
+      <div className=${dir<0?"dirback":""} style=${{position:"absolute",inset:0}}>${body}</div>
+    </main>
+    ${dive&&html`<div className="dive" aria-hidden="true">${[12,26,41,57,70,84,91].map((l,i)=>html`<i key=${i} style=${{left:l+"%",animationDelay:(i*.07)+"s",width:(6+i%3*4)+"px",height:(6+i%3*4)+"px"}}></i>`)}</div>`}
+    <nav className="dock" aria-label="Chapters">
+      <div className="progress">
+        <ol>
+          ${SCENES.map((s,i)=>html`<li key=${i}><button type="button" className=${"seg"+(i<scene?" done":"")+(i===scene?" current":"")} aria-current=${i===scene?"step":undefined} aria-label=${"Chapter "+(i+1)+": "+s.title} onClick=${()=>goTo(i)}><span></span></button></li>`)}
+        </ol>
+        <span className="progress-label"><b>${scene+1} / 6</b> · <span className="lbl-long">${SCENES[scene].title}</span><span className="lbl-short">${SCENES[scene].short}</span></span>
+        ${scene<5&&html`<button type="button" className="linkbtn" onClick=${()=>goTo(5)}>Skip to overview</button>`}
+      </div>
+      <div className="navrow">
+        <button type="button" className="btn btn-nav" onClick=${()=>goTo(scene-1)} disabled=${scene===0}>← Back</button>
+        <button type="button" className="btn btn-explore" onClick=${explore}><span className="lbl-long">Explore · ${exploreLabel}</span><span className="lbl-short">${exploreShort}</span></button>
+        ${scene<5?html`<button type="button" className="btn btn-primary btn-nav" onClick=${()=>goTo(scene+1)}>Next →</button>`:html`<button type="button" className="btn btn-primary btn-nav" onClick=${()=>{setScene(0);setDir(-1);}}>Start again</button>`}
+        <span className="keyhint" aria-hidden="true">← → keys</span>
+      </div>
+    </nav>
+    <p className="vh" aria-live="polite">${announce}</p>
+    ${drawer==="sources"&&html`<${SourcesPanel} focus=${srcFocus} onClose=${()=>setDrawer(null)}/>`}
+    ${drawer==="ask"&&html`<${AskPanel} onClose=${()=>setDrawer(null)} onCite=${onCite} state=${ask} setState=${setAsk}/>`}
+    ${drawer==="concept"&&html`<${ConceptPanel} onClose=${()=>setDrawer(null)} onSources=${()=>{setSrcFocus(null);setDrawer("sources");}}/>`}
+  </div>`;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(html`<${App}/>`);
+})();
+</script>
+
+</body>
+</html>
